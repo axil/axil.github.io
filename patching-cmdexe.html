@@ -6,7 +6,7 @@
         <meta name="author" content="me" />
         <meta name="copyright" content="me" />
 
-<meta name="keywords" content="cmd.exe, patching, software, " />
+<meta name="keywords" content="cmd.exe, patch, assembler, software, " />
         <title>Patching cmd.exe - axil's blog
 </title>
         <link href="./theme/css/slim-081711.css" rel="stylesheet" type="text/css">
@@ -87,7 +87,7 @@ Here's the corresponding code for the 64bit version (search for the hex string &
 .text:000000004AD1D0A4                 mov     rbx, cs:qword_4AD2E1E8
 .text:000000004AD1D0AB                 jmp     short loc_4AD1D0BC
 </pre>
-<p>And here's a python script that automates the process:</p>
+<p>And here's a <a class="reference external" href="https://github.com/axil/patch-cmd">python script</a> that automates the process:</p>
 <pre class="code python literal-block">
 <span class="kn">import</span> <span class="nn">shutil</span>
 
@@ -138,10 +138,13 @@ Here's the corresponding code for the 64bit version (search for the hex string &
             <a class="category-link" href="/categories.html#software-ref">software</a> 
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#assembler-ref">assembler
+                    <span>1</span>
+</a></li>
                 <li><a href="/tags.html#cmd.exe-ref">cmd.exe
                     <span>1</span>
 </a></li>
-                <li><a href="/tags.html#patching-ref">patching
+                <li><a href="/tags.html#patch-ref">patch
                     <span>1</span>
 </a></li>
             </ul>

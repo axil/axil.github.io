@@ -59,26 +59,66 @@
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <p>Breaking the execution of a bat-file with ctrl-c makes it stop with a pretty useless
+            <p>Breaking the execution of a bat-file with ctrl-c makes it stop with a pretty useless<a class="footnote-reference" href="#id2" id="id1">[*]</a>
 &quot;Terminate Batch job (Y/N)?&quot; prompt.</p>
-<p>It looks like the most universal way to suppress it is to patch cmd.exe.</p>
-<p>Here's a python script that implements the process described <a class="reference external" href="http://itsme.home.xs4all.nl/projects/misc/patching-cmdexe.html">here</a>:</p>
+<p>It looks like the most universal way to suppress it is to patch cmd.exe as described in <a class="reference external" href="http://itsme.home.xs4all.nl/projects/misc/patching-cmdexe.html">this blog</a>.</p>
+<p>In Windows 7 there're two cmd.exe: 32bit (for which the recipe above works) and 64bit (for which it doesn't).
+Here's the corresponding code for the 64bit version (search for the hex string &quot;BA 7B 23 00 00&quot; in cmd.exe):</p>
+<pre class="code literal-block">
+.text:000000004AD1D07A loc_4AD1D07A:                           ; CODE XREF: sub_4AD032D8+D^j
+.text:000000004AD1D07A                 cmp     cs:qword_4AD2E1E8, 0
+.text:000000004AD1D082                 jz      short loc_4AD1D0C1
+
+...... fill this with NOPS ( byte value 0x90 ):
+.text:000000004AD1D084                 mov     edx, 237Bh
+.text:000000004AD1D089                 xor     ecx, ecx
+.text:000000004AD1D08B                 lea     r8d, [rdx-53h]
+.text:000000004AD1D08F                 call    sub_4AD24DE0
+.text:000000004AD1D094                 cmp     eax, 1
+.text:000000004AD1D097                 jz      short loc_4AD1D0A4
+.text:000000004AD1D099                 call    sub_4AD0231C
+.text:000000004AD1D09E                 nop
+.text:000000004AD1D09F                 jmp     loc_4AD032EB
+.text:000000004AD1D0A4 ; ---------------------------------------------------------------------------
+......
+
+.text:000000004AD1D0A4
+.text:000000004AD1D0A4 loc_4AD1D0A4:                           ; CODE XREF: sub_4AD032D8+19DBF^j
+.text:000000004AD1D0A4                 mov     rbx, cs:qword_4AD2E1E8
+.text:000000004AD1D0AB                 jmp     short loc_4AD1D0BC
+</pre>
+<p>And here's a python script that automates the process:</p>
 <pre class="code python literal-block">
-<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'cmd.exe'</span><span class="p">,</span> <span class="s">'r+b'</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="k">def</span> <span class="nf">patch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">chunk</span><span class="p">,</span> <span class="n">replacement</span><span class="p">):</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">'r+b'</span><span class="p">)</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">z</span> <span class="o">=</span> <span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="s">'68 28 23 00 00 68 7B 23 00 00'</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">z</span> <span class="o">=</span> <span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">a</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">p</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">))</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
     <span class="k">print</span> <span class="s">'patch doesn</span><span class="se">\'</span><span class="s">t fit or file already patched'</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">'chunk found at offset </span><span class="si">%#x</span><span class="s">, patch? (y/n) '</span> <span class="o">%</span> <span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="s">'y'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">'chunk found (offset </span><span class="si">%#x</span><span class="s">), patch? (Y/n) '</span> <span class="o">%</span> <span class="n">p</span><span class="p">)</span> <span class="o">!=</span> <span class="s">'n'</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">'.bak'</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">'</span><span class="se">\x90</span><span class="s">'</span> <span class="o">*</span> <span class="mh">0x1A</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">replacement</span><span class="p">)</span>
         <span class="k">print</span> <span class="s">'patch successful'</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">print</span> <span class="s">'patching cancelled'</span>
 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">patch</span><span class="p">(</span><span class="s">'c:/windows/syswow64/cmd.exe'</span><span class="p">,</span> <span class="s">'68 28 23 00 00 68 7B 23 00 00'</span><span class="p">,</span> <span class="s">'</span><span class="se">\x90</span><span class="s">'</span> <span class="o">*</span> <span class="mh">0x1A</span><span class="p">)</span>
+<span class="n">patch</span><span class="p">(</span><span class="s">'c:/windows/system32/cmd.exe'</span><span class="p">,</span> <span class="s">'BA 7B 23 00 00 33 C9'</span><span class="p">,</span> <span class="s">'</span><span class="se">\x90</span><span class="s">'</span> <span class="o">*</span> <span class="mh">0x20</span><span class="p">)</span>
 </pre>
+<p>Be sure to assign the appropriate rights to the script so that it could overwrite the files.</p>
+<p>Backups are saved with '.bak' extension.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td>Answering 'N' will make the .bat execution continue from the line, following the one that was interrupted by ctrl-c. I've never used it and can't think of a situation where it would be useful.</td></tr>
+</tbody>
+</table>
 
             <aside>
             <nav>

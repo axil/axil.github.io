@@ -6,7 +6,7 @@
         <meta name="author" content="me" />
         <meta name="copyright" content="me" />
 
-<meta name="keywords" content=", software, " />
+<meta name="keywords" content="django, jinja, jinja2, software, " />
         <title>Django templates to Jinja2 vocabulary - axil's blog
 </title>
         <link href="./theme/css/slim-081711.css" rel="stylesheet" type="text/css">
@@ -70,11 +70,17 @@
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <table border="1" class="docutils">
+            <div class="graytable container">
+<table border="1" class="docutils">
 <colgroup>
-<col width="47%" />
-<col width="53%" />
+<col width="43%" />
+<col width="57%" />
 </colgroup>
+<thead valign="bottom">
+<tr><th class="head"><strong>Django templates</strong></th>
+<th class="head"><strong>Jinja2</strong></th>
+</tr>
+</thead>
 <tbody valign="top">
 <tr><td>{{ block.super }}</td>
 <td>{{ super() }}</td>
@@ -85,12 +91,19 @@
 <tr><td>{% cycle %}</td>
 <td>{{ loop.cycle }}</td>
 </tr>
-<tr><td>{{ v | default:&quot;-&quot; }}</td>
-<td>{{ v | default('-', true) }}</td>
+<tr><td>{{ v / default:&quot;-&quot; }}</td>
+<td>{{ v / default('-', true) }}</td>
 </tr>
-<tr><td>{{ v | default_if_none:&quot;-&quot; }}</td>
-<td>{{ v if v is not None else '-' }}</td>
+<tr><td>{{ v / default_if_none:&quot;-&quot; }}</td>
+<td>{{ v if v is not None else '-' }}<a class="footnote-reference" href="#id2" id="id1">[*]</a></td>
 </tr>
+</tbody>
+</table>
+</div>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td><a class="reference external" href="http://stackoverflow.com/questions/11146619/suppress-none-output-as-string-in-jinja2">http://stackoverflow.com/questions/11146619/suppress-none-output-as-string-in-jinja2</a></td></tr>
 </tbody>
 </table>
 
@@ -110,6 +123,18 @@
             <time pubdate="pubdate" datetime="2015-06-04T20:50:18.919025+06:00">Jun 4, 2015</time>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#software-ref">software</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#django-ref">django
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#jinja-ref">jinja
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#jinja2-ref">jinja2
+                    <span>1</span>
+</a></li>
+            </ul>
 
         </div>
         </section>

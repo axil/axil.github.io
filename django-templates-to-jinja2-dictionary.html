@@ -73,8 +73,8 @@
             <div class="graytable container">
 <table border="1" class="docutils">
 <colgroup>
-<col width="43%" />
-<col width="57%" />
+<col width="44%" />
+<col width="56%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Django templates</th>
@@ -91,10 +91,10 @@
 <tr><td>{% cycle %}</td>
 <td>{{ loop.cycle }}</td>
 </tr>
-<tr><td>{{ v / default:&quot;-&quot; }}</td>
-<td>{{ v / default('-', true) }}</td>
+<tr><td>{{ v | default:&quot;-&quot; }}</td>
+<td>{{ v | default('-', true) }}</td>
 </tr>
-<tr><td>{{ v / default_if_none:&quot;-&quot; }}</td>
+<tr><td>{{ v | default_if_none:&quot;-&quot; }}</td>
 <td>{{ v if v is not None else '-' }}<a class="footnote-reference" href="#id2" id="id1">[*]</a></td>
 </tr>
 </tbody>

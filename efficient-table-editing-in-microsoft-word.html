@@ -6,8 +6,8 @@
         <meta name="author" content="me" />
         <meta name="copyright" content="me" />
 
-<meta name="keywords" content="django, jinja2, software, " />
-        <title>Django templates to Jinja2 dictionary - axil's blog
+<meta name="keywords" content="word, tips, software, " />
+        <title>Efficient Table Editing in Microsoft Word - axil's blog
 </title>
         <link href="./theme/css/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="./theme/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -63,47 +63,59 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="./django-templates-to-jinja2-dictionary.html"> Django templates to Jinja2 dictionary  </a></h1>
+    <h1><a href="./efficient-table-editing-in-microsoft-word.html"> Efficient Table Editing in Microsoft Word  </a></h1>
     </header>
 </div>
 
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <div class="graytable container">
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="56%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Django templates</th>
-<th class="head">Jinja2</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>{{ block.super }}</td>
-<td>{{ super() }}</td>
-</tr>
-<tr><td>{{ forloop.counter }}</td>
-<td>{{ loop.index }}</td>
-</tr>
-<tr><td>{% cycle %}</td>
-<td>{{ loop.cycle }}</td>
-</tr>
-<tr><td>{{ v | default:&quot;-&quot; }}</td>
-<td>{{ v | default('-', true) }}</td>
-</tr>
-<tr><td>{{ v | default_if_none:&quot;-&quot; }}</td>
-<td>{{ v if v is not None else '-' }}<a class="footnote-reference" href="#id2" id="id1">[*]</a></td>
-</tr>
-</tbody>
-</table>
-</div>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
+            <ul class="simple">
+<li>tables:<ul>
+<li>select row:&nbsp; drag <em>or</em><ul>
+<li>click first cell then shift-click last cell <em>or</em></li>
+<li><cite>alt</cite> + <cite>home</cite> (go to the first cell) then <cite>shift</cite>+<cite>alt</cite>+<cite>end</cite></li>
+</ul>
+</li>
+<li>select column:&nbsp; drag <em>or</em><ul>
+<li>click top cell then shift-click bottom cell <em>or</em></li>
+<li>click top edge of the column<a class="footnote-reference" href="#id5" id="id1">[*]</a> <em>or</em></li>
+<li><cite>shift</cite> + right-click inside it<a class="footnote-reference" href="#id6" id="id2">[†]</a> <em>or</em></li>
+<li><cite>alt</cite> + <cite>page up</cite> (go to the topmost cell) then <cite>shift</cite> + <cite>alt</cite> + <cite>page down</cite></li>
+</ul>
+</li>
+<li>move row(s) up/down:&nbsp; <cite>shift</cite>+<cite>alt</cite>+<cite>up</cite>/<cite>down</cite> <a class="footnote-reference" href="#id7" id="id3">[‡]</a></li>
+<li>add row in the bottom:&nbsp; put curson into the last cell of the table and press <cite>tab</cite></li>
+<li>add row in the middle:&nbsp; put cursor just to the right of the last cell of the row and press <cite>enter</cite></li>
+<li>delete row(s)/column(s):&nbsp; select the row(s) <a class="footnote-reference" href="#id8" id="id4">[§]</a> /column(s) then <cite>backspace</cite></li>
+</ul>
+</li>
+</ul>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td><a class="reference external" href="http://stackoverflow.com/questions/11146619/suppress-none-output-as-string-in-jinja2">http://stackoverflow.com/questions/11146619/suppress-none-output-as-string-in-jinja2</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td>like this:</td></tr>
+</tbody>
+</table>
+<img alt="word1" src="img/word1.gif" />
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[†]</a></td><td>like that:</td></tr>
+</tbody>
+</table>
+<img alt="word2" src="img/word2.gif" />
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[‡]</a></td><td>single row is selected automatically; to move several rows, select them first</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[§]</a></td><td>make sure selection extends past the last column which is number of columns +1 (drag <em>or</em> <cite>shift</cite>+<cite>right</cite>):
+word shows the selection extended next to the last column.</td></tr>
 </tbody>
 </table>
 
@@ -111,7 +123,9 @@
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="./enabling-ctrl-v-in-windows-console-using-autohotkey.html" title="Previous: Enabling &quot;Ctrl-V&quot; in Windows console using Autohotkey">Enabling &quot;Ctrl-V&quot; in Windows console using Autohotkey</a></li>
+                <li class="previous_article">« <a href="./microsoft-excel-keyboard-shortcuts.html" title="Previous: Microsoft Excel Keyboard Shortcuts">Microsoft Excel Keyboard Shortcuts</a></li>
+ 
+                <li class="next_article"><a href="./suppressing-terminate-batch-job-yn-in-windows-console-by-patching-cmdexe.html" title="Next: Suppressing &quot;Terminate batch job? (Y/N)&quot; in Windows console by patching cmd.exe">Suppressing &quot;Terminate batch job? (Y/N)&quot; in Windows console by patching cmd.exe</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -120,7 +134,7 @@
     <div class="accordion-group">
         <div class="accordion-heading">
             <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
-                href="./django-templates-to-jinja2-dictionary.html#disqus_thread">
+                href="./efficient-table-editing-in-microsoft-word.html#disqus_thread">
                 Comments
             </a>
         </div>
@@ -130,8 +144,8 @@
 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'axil';
-        var disqus_identifier = 'django-templates-to-jinja2-dictionary.html';
-    var disqus_url = 'http://axil.github.io/django-templates-to-jinja2-dictionary.html';
+        var disqus_identifier = 'efficient-table-editing-in-microsoft-word.html';
+    var disqus_url = 'http://axil.github.io/efficient-table-editing-in-microsoft-word.html';
 
     (function() {
          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -151,15 +165,15 @@
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2015-06-05T10:54:12.275491+07:00">Jun 5, 2015</time>
+            <time pubdate="pubdate" datetime="2015-05-14T16:02:18.921535+07:00">May 14, 2015</time>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#software-ref">software</a> 
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
-                <li><a href="/tags.html#django-ref">django
-                    <span>1</span>
+                <li><a href="/tags.html#tips-ref">tips
+                    <span>5</span>
 </a></li>
-                <li><a href="/tags.html#jinja2-ref">jinja2
+                <li><a href="/tags.html#word-ref">word
                     <span>1</span>
 </a></li>
             </ul>

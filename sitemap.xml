@@ -2,21 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>http://axil.github.io/fix-alt-tab-in-labview.html</loc>
+    <loc>http://axil.github.io/django-templates-to-jinja2-dictionary.html</loc>
     <priority>0.8</priority>
     <lastmod>2015-06-05</lastmod>
   </url>
 
   <url>
-    <loc>http://axil.github.io/django-templates-to-jinja2-dictionary.html</loc>
-    <priority>0.8</priority>
-    <lastmod>2015-06-04</lastmod>
-  </url>
-
-  <url>
     <loc>http://axil.github.io/enabling-ctrl-v-in-windows-console-using-autohotkey.html</loc>
     <priority>0.8</priority>
-    <lastmod>2015-05-31</lastmod>
+    <lastmod>2015-06-05</lastmod>
   </url>
 
   <url>
@@ -32,15 +26,15 @@
   </url>
 
   <url>
-    <loc>http://axil.github.io/microsoft-excel-tips-and-tricks.html</loc>
+    <loc>http://axil.github.io/microsoft-word-tips-and-tricks.html</loc>
     <priority>0.8</priority>
-    <lastmod>2015-05-08</lastmod>
+    <lastmod>2015-05-14</lastmod>
   </url>
 
   <url>
-    <loc>http://axil.github.io/microsoft-word-tips-and-tricks.html</loc>
+    <loc>http://axil.github.io/microsoft-excel-tips-and-tricks.html</loc>
     <priority>0.8</priority>
-    <lastmod>2015-05-07</lastmod>
+    <lastmod>2015-05-08</lastmod>
   </url>
 
 

@@ -6,8 +6,8 @@
         <meta name="author" content="me" />
         <meta name="copyright" content="me" />
 
-<meta name="keywords" content="word, tables, tips, software, " />
-        <title>Efficient Table Editing in Microsoft Word - axil's blog
+<meta name="keywords" content="excel, shortcuts, tips, software, " />
+        <title>Essential Microsoft Excel Keyboard Shortcuts - axil's blog
 </title>
         <link href="./theme/css/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="./theme/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -63,69 +63,148 @@
 <article>
 <div class="row-fluid">
     <header class="page_header span10 offset2">
-    <h1><a href="./efficient-table-editing-in-microsoft-word.html"> Efficient Table Editing in Microsoft Word  </a></h1>
+    <h1><a href="./essential-microsoft-excel-keyboard-shortcuts.html"> Essential Microsoft Excel Keyboard Shortcuts  </a></h1>
     </header>
 </div>
 
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <ul class="simple">
-<li>tables:<ul>
-<li>select row:&nbsp; drag <em>or</em><ul>
-<li>click first cell then shift-click last cell <em>or</em></li>
-<li><cite>alt</cite> + <cite>home</cite> (go to the first cell) then <cite>shift</cite>+<cite>alt</cite>+<cite>end</cite></li>
+            <p>The most convenient and the least used shortcut of Excel is:</p>
+<ul class="simple">
+<li>when editing a formula, press <cite>f4</cite> to toggle between absolute and relative reference</li>
+</ul>
+<p>To use it, click a cell you want to reference, say, D5. Then press <cite>f4</cite> once (it will change to $D$5)
+to make the reference absolute so that it wont 'adapt' when you drag your formula to other
+rows or columns the way relative references do.</p>
+<p>The problem with Excel keyboard shortcuts is that while they can make sheets editing
+more effective they are so numerous and their documentation is so poorly structured
+that people hardly ever use any of them.</p>
+<p>I've come through all of them and here's a cheetsheet of shortcuts that I found useful:</p>
+<div class="section" id="entering-data">
+<h2>Entering data</h2>
+<ul class="simple">
+<li>filling up a table (just a rectangular area):<ul>
+<li><cite>tab</cite> to move active cell to the right,</li>
+<li><cite>shift</cite>+<cite>tab</cite> to the left,</li>
+<li><cite>enter</cite> to go to the &quot;start&quot; of next line (to the column you originally started with, that is where you pressed <cite>tab</cite> or <cite>enter</cite> for the first time <a class="footnote-reference" href="#id5" id="id1">[*]</a>),</li>
+<li><cite>shift</cite>+<cite>enter</cite> to move up</li>
 </ul>
 </li>
-<li>select column:&nbsp; drag <em>or</em><ul>
-<li>click top cell then shift-click bottom cell <em>or</em></li>
-<li>click top edge of the column<a class="footnote-reference" href="#id5" id="id1">[*]</a> <em>or</em></li>
-<li><cite>shift</cite> + right-click inside it<a class="footnote-reference" href="#id6" id="id2">[†]</a> <em>or</em></li>
-<li><cite>alt</cite> + <cite>page up</cite> (go to the topmost cell) then <cite>shift</cite> + <cite>alt</cite> + <cite>page down</cite></li>
+</ul>
+<img alt="enter and tab" class="centered-image" src="img/Image-1a-blog.png" />
+<p>This &quot;mode&quot; is an alternative to using arrow keys. If you press an arrow key you switch out of the &quot;mode&quot;
+and the &quot;first column&quot; is reset to the current position.</p>
+</div>
+<div class="section" id="moving-around">
+<h2>Moving around</h2>
+<ul class="simple">
+<li>jump to the border of the filled in area: <cite>ctrl</cite>+arrows</li>
+</ul>
+</div>
+<div class="section" id="selecting-cells">
+<h2>Selecting cells</h2>
+<ul class="simple">
+<li>select row/column:&nbsp; <cite>shift</cite>+<cite>space</cite> / <cite>ctrl</cite>+<cite>space</cite></li>
+<li>expand/reduce selection: <cite>shift</cite>+arrows</li>
+<li>shift multi-cell selection box: ctrl-drag</li>
+<li>switching between the corners of the selection: <cite>ctrl</cite>+<cite>.</cite></li>
+</ul>
+</div>
+<div class="section" id="data-manipulation">
+<h2>Data manipulation</h2>
+<ul class="simple">
+<li>insert cell(s): <cite>ctrl</cite>+<cite>+</cite><ul>
+<li>inserts row if a row is selected</li>
+<li>inserts column if a column is selected</li>
+<li>shows dialog if a cell is selected</li>
 </ul>
 </li>
-<li>move row(s) up/down:&nbsp; <cite>shift</cite>+<cite>alt</cite>+<cite>up</cite>/<cite>down</cite> <a class="footnote-reference" href="#id7" id="id3">[‡]</a></li>
-<li>add row in the bottom:&nbsp; put curson into the last cell of the table and press <cite>tab</cite></li>
-<li>add row in the middle:&nbsp; put cursor just to the right of the last cell of the row and press <cite>enter</cite></li>
-<li>delete row(s)/column(s):&nbsp; select the row(s) <a class="footnote-reference" href="#id8" id="id4">[§]</a> /column(s) then <cite>backspace</cite></li>
+<li>move several rows/columns:<ul>
+<li>drag to move into an empty space</li>
+<li>shift-drag to move and squeeze between existing rows/columns</li>
+<li><cite>ctrl</cite>+<cite>x</cite> to cut, then <cite>ctrl</cite>+<cite>num+</cite> to insert (shifting adjacent rows/columns accordingly)</li>
+</ul>
+</li>
+<li>copy data into the current cell<ul>
+<li>copy formula above:&nbsp; <cite>ctrl</cite>+<cite>'</cite> (and enter edit mode as if <cite>f2</cite> is pressed)</li>
+<li>copy value above:&nbsp; <cite>ctrl</cite>+<cite>&quot;</cite> (without entering edit mode)</li>
+<li>fill down:&nbsp; <cite>ctrl</cite>+<cite>d</cite> (copy formula and format from the upper cell, no edit mode)</li>
+<li>fill right:&nbsp; <cite>ctrl</cite>+<cite>r</cite>  (copy formula and format from the left cell, no edit mode)</li>
+<li>autocomplete text from adjacent cells in the current column: <cite>alt</cite>+<cite>arrow down</cite> <a class="footnote-reference" href="#id6" id="id2">[†]</a></li>
+</ul>
+</li>
+<li>copy data inside cell range<ul>
+<li>fill down:&nbsp; <cite>ctrl</cite>+<cite>d</cite> (replicate the upper row downwards)</li>
+<li>fill right:&nbsp; <cite>ctrl</cite>+<cite>r</cite>  (replicate the leftmost column to the right)</li>
+<li>thus fill rectangle will be <cite>ctrl</cite>+<cite>d</cite> followed by <cite>ctrl</cite>+<cite>r</cite></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="formatting">
+<h2>Formatting</h2>
+<ul class="simple">
+<li>cell modes:<ul>
+<li>format cells:&nbsp; <cite>ctrl</cite>+<cite>1</cite></li>
+<li>number mode:&nbsp; <cite>ctrl</cite>+ <cite>shift</cite> + <cite>!</cite></li>
+<li>modes:&nbsp; general/number/time/date/currency/percentage/scientific</li>
+</ul>
+</li>
+</ul>
+<pre style="background:none;border:0;margin:-20px 0 -10px 153px;padding: 0">~      !     @    #      $         %          ^</pre><ul class="simple">
+<li>visual formatting:<ul>
+<li>clear formatting:&nbsp; <cite>alt</cite>+<cite>'</cite> then <cite>enter</cite></li>
+<li>add/remove borders:&nbsp; <cite>ctrl</cite>+<cite>shift</cite> + <cite>&amp;</cite>/<cite>_</cite></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="miscellaneous">
+<h2>Miscellaneous</h2>
+<ul class="simple">
+<li>etc<ul>
+<li>repeat last action:&nbsp; <cite>f4</cite> <a class="footnote-reference" href="#id7" id="id3">[‡]</a> or <cite>ctrl</cite>+<cite>y</cite> or <cite>alt</cite>+<cite>enter</cite></li>
+</ul>
+</li>
+<li>formulas:<ul>
+<li>toggle formulas:&nbsp; <cite>ctrl</cite>+<cite>`</cite></li>
+<li>autosum:&nbsp; <cite>alt</cite>+<cite>=</cite></li>
+<li>toggle absolute and relative references:&nbsp; <cite>f4</cite> <a class="footnote-reference" href="#id8" id="id4">[§]</a></li>
 </ul>
 </li>
 </ul>
 <table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td>like this:</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td>the position is reset to the current cell if arrows are used for naviation</td></tr>
 </tbody>
 </table>
-<img alt="word1" src="img/word1.gif" />
 <table class="docutils footnote" frame="void" id="id6" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[†]</a></td><td>like that:</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[†]</a></td><td>with cell(s) selected</td></tr>
 </tbody>
 </table>
-<img alt="word2" src="img/word2.gif" />
 <table class="docutils footnote" frame="void" id="id7" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[‡]</a></td><td>single row is selected automatically; to move several rows, select them first</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[‡]</a></td><td>other meaning for filtering and data validation, see this <a class="reference external" href="http://www.accountingweb.com/technology/excel/automating-data-validation-lists-in-excel">blog post</a></td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id8" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[§]</a></td><td>make sure selection extends past the last column which is number of columns +1 (drag <em>or</em> <cite>shift</cite>+<cite>right</cite>):
-word shows the selection extended next to the last column.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id4">[§]</a></td><td>when editing a cell with text cursor blinking inside the reference name</td></tr>
 </tbody>
 </table>
+</div>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="./essential-microsoft-excel-keyboard-shortcuts.html" title="Previous: Essential Microsoft Excel Keyboard Shortcuts">Essential Microsoft Excel Keyboard Shortcuts</a></li>
- 
-                <li class="next_article"><a href="./suppressing-terminate-batch-job-yn-in-windows-console-by-patching-cmdexe.html" title="Next: Suppressing &quot;Terminate batch job? (Y/N)&quot; in Windows console by patching cmd.exe">Suppressing &quot;Terminate batch job? (Y/N)&quot; in Windows console by patching cmd.exe</a> »</li>
+                <li class="next_article"><a href="./efficient-table-editing-in-microsoft-word.html" title="Next: Efficient Table Editing in Microsoft Word">Efficient Table Editing in Microsoft Word</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -134,7 +213,7 @@ word shows the selection extended next to the last column.</td></tr>
     <div class="accordion-group">
         <div class="accordion-heading">
             <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2" 
-                href="./efficient-table-editing-in-microsoft-word.html#disqus_thread">
+                href="./essential-microsoft-excel-keyboard-shortcuts.html#disqus_thread">
                 Comments
             </a>
         </div>
@@ -144,8 +223,8 @@ word shows the selection extended next to the last column.</td></tr>
 <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'axil';
-        var disqus_identifier = 'efficient-table-editing-in-microsoft-word.html';
-    var disqus_url = 'http://axil.github.io/efficient-table-editing-in-microsoft-word.html';
+        var disqus_identifier = 'essential-microsoft-excel-keyboard-shortcuts.html';
+    var disqus_url = 'http://axil.github.io/essential-microsoft-excel-keyboard-shortcuts.html';
 
     (function() {
          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -165,19 +244,19 @@ word shows the selection extended next to the last column.</td></tr>
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2015-05-14T16:02:18.921535+06:00">May 14, 2015</time>
+            <time pubdate="pubdate" datetime="2015-05-08T11:04:18.828848+06:00">May 8, 2015</time>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#software-ref">software</a> 
             <h4>Tags</h4>
             <ul class="list-of-tags tags-in-article"> 
-                <li><a href="/tags.html#tables-ref">tables
+                <li><a href="/tags.html#excel-ref">excel
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags.html#shortcuts-ref">shortcuts
                     <span>1</span>
 </a></li>
                 <li><a href="/tags.html#tips-ref">tips
                     <span>5</span>
-</a></li>
-                <li><a href="/tags.html#word-ref">word
-                    <span>1</span>
 </a></li>
             </ul>
 

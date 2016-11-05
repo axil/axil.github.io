@@ -180,6 +180,7 @@ article p a:hover, article ol a:hover {
     list-style-type: decimal;
     font-size: 1em;
     list-style-position: inside;
+    margin-left: 0;
 }
 
 .article-content li {

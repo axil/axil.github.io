@@ -2,6 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
+    <loc>http://axil.github.io/git-fast-forward.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2016-11-07</lastmod>
+  </url>
+
+  <url>
     <loc>http://axil.github.io/how-to-install-a-python-wheel-with-one-doubleclick.html</loc>
     <priority>0.8</priority>
     <lastmod>2015-12-03</lastmod>

@@ -73,12 +73,14 @@
             <p>vim can check syntax as you type using quickfix feature.
 To jump to next/previous error you need to write :cnext or :cprev in
 the command line.</p>
-<p>unimpaired plugin has convenient shortcuts [q and ]q for that.</p>
+<p>unimpaired plugin has shortcuts [q and ]q for that.</p>
 <p>The problem with this is that if there's only one error, :cn and :cp don't work,
 you need to use :cc. Which is an amazingly bad design decision in my opinion.</p>
 <p>The following shortcuts solve this issue:</p>
-<p>nnoremap } :&lt;C-R&gt;=len(getqflist())==1?&quot;cc&quot;:&quot;cn&quot;&lt;CR&gt;&lt;CR&gt;
-nnoremap { :&lt;C-R&gt;=len(getqflist())==1?&quot;cc&quot;:&quot;cp&quot;&lt;CR&gt;&lt;CR&gt;</p>
+<pre class="literal-block">
+nnoremap } :&lt;C-R&gt;=len(getqflist())==1?&quot;cc&quot;:&quot;cn&quot;&lt;CR&gt;&lt;CR&gt;
+nnoremap { :&lt;C-R&gt;=len(getqflist())==1?&quot;cc&quot;:&quot;cp&quot;&lt;CR&gt;&lt;CR&gt;
+</pre>
 <p>They map the '}' and '{' keys to jump to next/previous error even if there's only one
 error in a file.</p>
 

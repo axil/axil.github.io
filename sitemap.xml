@@ -38,6 +38,12 @@
   </url>
 
   <url>
+    <loc>http://axil.github.io/jump-to-next-error-in-vim.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2015-05-26</lastmod>
+  </url>
+
+  <url>
     <loc>http://axil.github.io/suppressing-terminate-batch-job-yn-in-windows-console-by-patching-cmdexe.html</loc>
     <priority>0.8</priority>
     <lastmod>2015-05-15</lastmod>

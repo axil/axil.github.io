@@ -97,7 +97,7 @@
 <tr><td>{{ v | default_if_none:&quot;-&quot; }}</td>
 <td>{{ v if v is not None else '-' }}<a class="footnote-reference" href="#id2" id="id1">[*]</a></td>
 </tr>
-<tr><td>{{ d | date:&quot;Y m d H M S&quot; }}</td>
+<tr><td>{{ d | date:&quot;Y-m-d H:m:s&quot; }}</td>
 <td>{{ d.strftime('%Y-%m-%d %H:%M:%S') }}</td>
 </tr>
 </tbody>

@@ -2,6 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
+    <loc>http://axil.github.io/pytest-vs-standard-django-tests.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2017-06-08</lastmod>
+  </url>
+
+  <url>
     <loc>http://axil.github.io/django-templates-to-jinja2-dictionary.html</loc>
     <priority>0.8</priority>
     <lastmod>2017-03-21</lastmod>

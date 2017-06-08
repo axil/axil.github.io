@@ -14,9 +14,27 @@
   </url>
 
   <url>
+    <loc>http://axil.github.io/git-others.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2017-02-13</lastmod>
+  </url>
+
+  <url>
+    <loc>http://axil.github.io/how-to-open-ipynb-file-with-one-doubleclick-on-windows.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2017-01-11</lastmod>
+  </url>
+
+  <url>
     <loc>http://axil.github.io/jump-to-next-error-in-vim.html</loc>
     <priority>0.8</priority>
     <lastmod>2016-12-07</lastmod>
+  </url>
+
+  <url>
+    <loc>http://axil.github.io/improving-the-ms-office-ribbon.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2016-11-10</lastmod>
   </url>
 
   <url>

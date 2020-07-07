@@ -70,20 +70,19 @@
 <div class="row-fluid">
         <div class="span8 offset2 article-content">
 
-            <p>I've written a python script named:</p>
-<pre class="literal-block">
-git ff
-</pre>
-<p>which does what you would expect it to: it fast-forwards the current branch against its tracking branch
-and shows all kind of relevant info if there's an error.</p>
-<p><strong>Update:</strong></p>
-<p>As of 2020 it can be done simpler:</p>
+            <p>Running <cite>git merge</cite> with <cite>--ff-only</cite> argument is a nice precaution to avoid unnecessary merges.</p>
+<p>It is convenient to abbreviate it as <cite>git ff</cite>:</p>
 <div class="line-block">
 <div class="line">git config --global ff &quot;merge --ff-only&quot;</div>
 </div>
+<hr class="docutils" />
+<p>In the earlier versions of django this command didn't go out of the box.</p>
+<p>The script below did pretty much the same as <cite>git merge --ff-only</cite> does now: it fast-forwards
+the current branch against its tracking branch and shows all kind of relevant info if there's
+an error.</p>
 <p><strong>Prerequisites:</strong></p>
 <div class="line-block">
-<div class="line">python of any version (preferably 2.7.x or 3.5.x)</div>
+<div class="line">python of any version (&gt;=2.7 or &gt;=3.5)</div>
 </div>
 <p><strong>Installation:</strong></p>
 <ol class="arabic">

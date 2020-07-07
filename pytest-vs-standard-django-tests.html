@@ -72,28 +72,28 @@
 
             <p>By default both testing frameworks rely on transactions for test cases isolation.
 But the details are different.</p>
-<p>Standard django test framework works like that. Consider the following testcase:</p>
-<pre class="literal-block">
-from django.test import TestCase
-from django.contrib.auth.models import User
+<p>To see how django test framework works consider the following testcase:</p>
+<pre class="code python literal-block">
+<span class="kn">from</span> <span class="nn">django.test</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
 
-def get_users():
-    return repr(list(u.username for u in User.objects.all()))
+<span class="k">def</span> <span class="nf">get_users</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()))</span>
 
-class UserTest(TestCase):
-    def setUp(self):
-        User.objects.create(username='a')
-        print('setup: ' + get_users())
+<span class="k">class</span> <span class="nc">UserTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'a'</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'setup: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
 
-    def test1(self):
-        User.objects.create(username='b')
-        print('test1: ' + get_users())
+    <span class="k">def</span> <span class="nf">test1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'b'</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'test1: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
 
-    def test2(self):
-        User.objects.create(username='c')
-        print('test2: ' + get_users())
+    <span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'c'</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'test2: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
 </pre>
-<p>It prints:</p>
+<p>It prints (&quot;pytest test.py&quot;):</p>
 <pre class="literal-block">
 setup: ['a']
 test1: ['a', 'b']
@@ -102,108 +102,108 @@ test2: ['a', 'c']
 </pre>
 <p>Which corresponds to the following transaction layout:</p>
 <pre class="literal-block">
-start transaction -&gt; setup -&gt; test1 -&gt; rollback
+start transaction -&gt; setup -&gt; test1 -&gt; rollback -&gt;
 start transaction -&gt; setup -&gt; test2 -&gt; rollback
 </pre>
 <p>By default in pytest the same algorithm is used:</p>
+<pre class="code python literal-block">
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="k">def</span> <span class="nf">get_users</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()))</span>
+
+<span class="nd">&#64;pytest.fixture</span>
+<span class="k">def</span> <span class="nf">first_user</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'a'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'setup: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
+
+<span class="nd">&#64;pytest.mark.django_db</span>
+<span class="k">def</span> <span class="nf">test1</span><span class="p">(</span><span class="n">first_user</span><span class="p">):</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'b'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'test1: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
+
+<span class="nd">&#64;pytest.mark.django_db</span>
+<span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="n">first_user</span><span class="p">):</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'c'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'test2: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
+
+<span class="n">setup</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">]</span>
+<span class="n">test1</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">]</span>
+<span class="n">setup</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">]</span>
+<span class="n">test2</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">]</span>
+</pre>
+<p>Now consider a situation where the setup function takes a long time to run. In pytest it is possible
+to do such a trick then:</p>
+<pre class="code python literal-block">
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="k">def</span> <span class="nf">get_users</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()))</span>
+
+<span class="nd">&#64;pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s1">'module'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">django_db_setup</span><span class="p">(</span><span class="n">django_db_setup</span><span class="p">,</span> <span class="n">django_db_blocker</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">django_db_blocker</span><span class="o">.</span><span class="n">unblock</span><span class="p">():</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'a'</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'setup: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
+
+<span class="nd">&#64;pytest.mark.django_db</span>
+<span class="k">def</span> <span class="nf">test1</span><span class="p">(</span><span class="n">first_user</span><span class="p">):</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'b'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'test1: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
+
+<span class="nd">&#64;pytest.mark.django_db</span>
+<span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="n">first_user</span><span class="p">):</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'c'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'test2: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
+</pre>
+<p>which prints:</p>
 <pre class="literal-block">
-import pytest
-from django.contrib.auth.models import User
-
-def get_users():
-    return repr(list(u.username for u in User.objects.all()))
-
-&#64;pytest.fixture
-def first_user(db):
-    User.objects.create(username='a')
-    print('setup: ' + get_users())
-
-&#64;pytest.mark.django_db
-def test1(first_user):
-    User.objects.create(username='b')
-    print('test1: ' + get_users())
-
-&#64;pytest.mark.django_db
-def test2(first_user):
-    User.objects.create(username='c')
-    print('test2: ' + get_users())
-
 setup: ['a']
 test1: ['a', 'b']
-setup: ['a']
 test2: ['a', 'c']
 </pre>
-<p>Now consider a situation when setup takes more time to run than db creation. In pytest it is possible
-to do such a trick:</p>
+<p>So the transactions layout is like that:</p>
 <pre class="literal-block">
-import pytest
-from django.contrib.auth.models import User
-
-def get_users():
-    return repr(list(u.username for u in User.objects.all()))
-
-&#64;pytest.fixture(scope='module')
-def django_db_setup(django_db_setup, django_db_blocker):
-    with django_db_blocker.unblock():
-        User.objects.create(username='a')
-        print('setup: ' + get_users())
-
-&#64;pytest.mark.django_db
-def test1(first_user):
-    User.objects.create(username='b')
-    print('test1: ' + get_users())
-
-&#64;pytest.mark.django_db
-def test2(first_user):
-    User.objects.create(username='c')
-    print('test2: ' + get_users())
-</pre>
-<p>It prints:</p>
-<pre class="literal-block">
-setup: ['a']
-test1: ['a', 'b']
-test2: ['a', 'c']
-</pre>
-<p>So the transactions are like that:</p>
-<pre class="literal-block">
-setup
-start transaction -&gt; test1 -&gt; rollback
+setup -&gt;
+start transaction -&gt; test1 -&gt; rollback -&gt;
 start transaction -&gt; test2 -&gt; rollback
 </pre>
-<p>Which can be used with <cite>--reuse-db</cite> flag to save db creation time, but at a cost of losing isolation between executions of the setup function in the subsequent test runs. (switching from create to get_or_create will adapt the test to 'a' being kept in db between runs).</p>
-<p>To keep test database clean, manual deletion of all records created in setup function is necessary, but doing so is error-prone (you need to keep in mind that you should delete each record you create in setup). In pytest cleanup is implemented in the same setup function using the generators technique:</p>
-<pre class="literal-block">
-import pytest
-from django.contrib.auth.models import User
+<p>It can be used with &quot;--reuse-db&quot; flag to save db creation time, but at a cost of losing isolation between executions of the setup function in the subsequent test runs. To avoid 'User a already exists' situation we can change &quot;User.objects.create&quot; to &quot;User.objects.get_or_create&quot;, but it leaves the db in a dirty state.</p>
+<p>To keep test database clean, manual deletion of all records created in setup function is necessary, but doing so is error-prone (you need to keep in mind that you should delete each record you create in setup). In pytest cleanup is supposed to be implemented in the same setup function using the generators technique:</p>
+<pre class="code python literal-block">
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
 
-def get_users():
-    return repr(list(u.username for u in User.objects.all()))
+<span class="k">def</span> <span class="nf">get_users</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()))</span>
 
-&#64;pytest.fixture(scope='module')
-def django_db_setup(django_db_setup, django_db_blocker):
-    with django_db_blocker.unblock():
-        User.objects.create(username='a')
-        print('setup: ' + get_users())
-    yield
-    with django_db_blocker.unblock():
-        User.objects.filter(username='a').delete()
-        print('cleanup: ' + get_users())
+<span class="nd">&#64;pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s1">'module'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">django_db_setup</span><span class="p">(</span><span class="n">django_db_setup</span><span class="p">,</span> <span class="n">django_db_blocker</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">django_db_blocker</span><span class="o">.</span><span class="n">unblock</span><span class="p">():</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'a'</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'setup: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
+    <span class="k">yield</span>
+    <span class="k">with</span> <span class="n">django_db_blocker</span><span class="o">.</span><span class="n">unblock</span><span class="p">():</span>
+        <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'a'</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">'cleanup: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
 
-&#64;pytest.mark.django_db
-def test1():
-    User.objects.create(username='b')
-    print('test1: ' + get_users())
+<span class="nd">&#64;pytest.mark.django_db</span>
+<span class="k">def</span> <span class="nf">test1</span><span class="p">():</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'b'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'test1: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
 
-&#64;pytest.mark.django_db
-def test2():
-    User.objects.create(username='c')
-    print('test2: ' + get_users())
+<span class="nd">&#64;pytest.mark.django_db</span>
+<span class="k">def</span> <span class="nf">test2</span><span class="p">():</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">'c'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'test2: '</span> <span class="o">+</span> <span class="n">get_users</span><span class="p">())</span>
 
 
-setup: ['a']
-test1: ['a', 'b']
-test2: ['a', 'c']
-cleanup: []
+<span class="n">setup</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">]</span>
+<span class="n">test1</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">]</span>
+<span class="n">test2</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">]</span>
+<span class="n">cleanup</span><span class="p">:</span> <span class="p">[]</span>
 </pre>
 <p>The technique shows how in pytest one can exclude the setup function from the transaction rollback mechanism so that the setup is only run once for the test suite which means lower testing time.</p>
 <p>There are other ways to get such an effect, but this one is most close to the &quot;letter of the documentation&quot;.</p>
@@ -212,7 +212,7 @@ cleanup: []
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="./django-templates-to-jinja2-dictionary.html" title="Previous: Django templates to Jinja2 dictionary">Django templates to Jinja2 dictionary</a></li>
+                <li class="previous_article">« <a href="./raschiot-nagruzki-na-balku.html" title="Previous: Расчёт нагрузки на балку">Расчёт нагрузки на балку</a></li>
             </ul>
             </nav>
             </aside>
@@ -252,7 +252,7 @@ cleanup: []
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2017-06-08T12:54:04.501042+07:00">Jun 8, 2017</time>
+            <time pubdate="pubdate" datetime="2020-07-07T11:59:36.653235+07:00">Jul 7, 2020</time>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#software-ref">software</a> 
             <h4>Tags</h4>

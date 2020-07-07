@@ -4,7 +4,13 @@
   <url>
     <loc>http://axil.github.io/pytest-vs-standard-django-tests.html</loc>
     <priority>0.8</priority>
-    <lastmod>2017-06-08</lastmod>
+    <lastmod>2020-07-07</lastmod>
+  </url>
+
+  <url>
+    <loc>http://axil.github.io/raschiot-nagruzki-na-balku.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2020-07-07</lastmod>
   </url>
 
   <url>
@@ -44,21 +50,33 @@
   </url>
 
   <url>
+    <loc>http://axil.github.io/essential-microsoft-excel-keyboard-shortcuts.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2015-12-09</lastmod>
+  </url>
+
+  <url>
     <loc>http://axil.github.io/how-to-install-a-python-wheel-with-one-doubleclick.html</loc>
     <priority>0.8</priority>
     <lastmod>2015-12-03</lastmod>
   </url>
 
   <url>
-    <loc>http://axil.github.io/fix-alt-tab-in-labview.html</loc>
+    <loc>http://axil.github.io/efficient-table-editing-in-microsoft-word.html</loc>
     <priority>0.8</priority>
-    <lastmod>2015-06-05</lastmod>
+    <lastmod>2015-07-31</lastmod>
   </url>
 
   <url>
     <loc>http://axil.github.io/enabling-ctrl-v-in-windows-console-using-autohotkey.html</loc>
     <priority>0.8</priority>
-    <lastmod>2015-05-31</lastmod>
+    <lastmod>2015-07-31</lastmod>
+  </url>
+
+  <url>
+    <loc>http://axil.github.io/fix-alt-tab-in-labview.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2015-07-31</lastmod>
   </url>
 
   <url>
@@ -71,18 +89,6 @@
     <loc>http://axil.github.io/suppressing-terminate-batch-job-yn-in-windows-console-by-patching-cmdexe.html</loc>
     <priority>0.8</priority>
     <lastmod>2015-05-15</lastmod>
-  </url>
-
-  <url>
-    <loc>http://axil.github.io/essential-microsoft-excel-keyboard-shortcuts.html</loc>
-    <priority>0.8</priority>
-    <lastmod>2015-05-08</lastmod>
-  </url>
-
-  <url>
-    <loc>http://axil.github.io/efficient-table-editing-in-microsoft-word.html</loc>
-    <priority>0.8</priority>
-    <lastmod>2015-05-08</lastmod>
   </url>
 
 

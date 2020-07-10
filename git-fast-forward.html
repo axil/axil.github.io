@@ -3,8 +3,9 @@
     <head>
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="author" content="me" />
-        <meta name="copyright" content="me" />
+        <meta name="author" content="Lev Maximov" />
+        <meta name="copyright" content="Lev Maximov" />
+        <meta name="monetization" content="$ilp.uphold.com/y4ZnwiyRnb8i" />
 
 <meta name="keywords" content="git, linux, windows, fast-forward, software, " />
         <title>git fast-forward - axil's blog
@@ -113,16 +114,16 @@ an error.</p>
     <span class="k">return</span> <span class="n">call</span><span class="p">(</span><span class="s1">'git rev-parse </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">branch</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'usage: git ff [&lt;remote&gt;]'</span><span class="p">)</span>
-    <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'usage: git ff [&lt;remote&gt;]'</span><span class="p">)</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">branch</span> <span class="o">=</span> <span class="n">mystrip</span><span class="p">(</span><span class="n">call</span><span class="p">(</span><span class="s1">'git symbolic-ref HEAD'</span><span class="p">))</span>    <span class="c1"># git name-rev --name-only HEAD would also do</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
     <span class="n">tracked</span> <span class="o">=</span> <span class="s1">'/'</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">branch</span><span class="p">))</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">remote</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="s1">'git config branch.</span><span class="si">%s</span><span class="s1">.remote'</span> <span class="o">%</span> <span class="n">branch</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">remote</span> <span class="o">==</span> <span class="s1">''</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s1">'branch not tracking and no remote given, aborting'</span><span class="p">)</span>
-        <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'branch not tracking and no remote given, aborting'</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">merge</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="s1">'git config branch.</span><span class="si">%s</span><span class="s1">.merge'</span> <span class="o">%</span> <span class="n">branch</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">remote</span><span class="o">==</span><span class="s1">'.'</span><span class="p">:</span>
         <span class="n">tracked</span> <span class="o">=</span> <span class="n">merge</span>
@@ -130,26 +131,26 @@ an error.</p>
         <span class="n">tracked</span> <span class="o">=</span> <span class="s1">'/'</span><span class="o">.</span><span class="n">join</span><span class="p">((</span> <span class="n">remote</span><span class="p">,</span> <span class="n">mystrip</span><span class="p">(</span><span class="n">merge</span><span class="p">)</span> <span class="p">))</span>
 <span class="n">base_id</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="s1">'git merge-base </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">branch</span><span class="p">,</span> <span class="n">tracked</span><span class="p">))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">get_id</span><span class="p">(</span><span class="n">branch</span><span class="p">)[:</span><span class="mi">7</span><span class="p">],</span> <span class="n">branch</span><span class="p">,</span> <span class="s1">'(current)'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_id</span><span class="p">(</span><span class="n">tracked</span><span class="p">)[:</span><span class="mi">7</span><span class="p">],</span> <span class="n">tracked</span><span class="p">,</span> <span class="s1">'(tracked)'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">base_id</span><span class="p">[:</span><span class="mi">7</span><span class="p">],</span> <span class="s1">'(base)'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_id</span><span class="p">(</span><span class="n">branch</span><span class="p">)[:</span><span class="mi">7</span><span class="p">],</span> <span class="n">branch</span><span class="p">,</span> <span class="s1">'(current)'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_id</span><span class="p">(</span><span class="n">tracked</span><span class="p">)[:</span><span class="mi">7</span><span class="p">],</span> <span class="n">tracked</span><span class="p">,</span> <span class="s1">'(tracked)'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">base_id</span><span class="p">[:</span><span class="mi">7</span><span class="p">],</span> <span class="s1">'(base)'</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">base_id</span> <span class="o">!=</span> <span class="n">get_id</span><span class="p">(</span><span class="n">branch</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'Cannot fast-forward'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Cannot fast-forward'</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">n</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="s1">'git rev-list </span><span class="si">%s</span><span class="s1">..</span><span class="si">%s</span><span class="s1"> |wc -l'</span> <span class="o">%</span> <span class="p">(</span><span class="n">branch</span><span class="p">,</span> <span class="n">tracked</span><span class="p">))</span>
 <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="s1">'0'</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'Your branch is already up-to-date'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Your branch is already up-to-date'</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">'Fast-forwarding </span><span class="si">%s</span><span class="s1"> revision(s)'</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">call</span><span class="p">(</span><span class="s1">'git merge </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">tracked</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Fast-forwarding </span><span class="si">%s</span><span class="s1"> revision(s)'</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">call</span><span class="p">(</span><span class="s1">'git merge </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">tracked</span><span class="p">))</span>
 </pre>
 
             <aside>
             <nav>
             <ul class="articles_timeline">
  
-                <li class="previous_article">« <a href="./essential-microsoft-excel-keyboard-shortcuts.html" title="Previous: Essential Microsoft Excel Keyboard Shortcuts">Essential Microsoft Excel Keyboard Shortcuts</a></li>
+                <li class="previous_article">« <a href="./how-to-install-a-python-wheel-with-one-doubleclick.html" title="Previous: How to install a python wheel with one doubleclick">How to install a python wheel with one doubleclick</a></li>
  
                 <li class="next_article"><a href="./improving-the-ms-office-ribbon.html" title="Next: Improving the MS Office ribbon">Improving the MS Office ribbon</a> »</li>
             </ul>

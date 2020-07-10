@@ -3,8 +3,9 @@
     <head>
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="author" content="me" />
-        <meta name="copyright" content="me" />
+        <meta name="author" content="Lev Maximov" />
+        <meta name="copyright" content="Lev Maximov" />
+        <meta name="monetization" content="$ilp.uphold.com/y4ZnwiyRnb8i" />
 
 <meta name="keywords" content="cmd.exe, windows console, tips, patch, assembler, software, " />
         <title>Suppressing &quot;Terminate batch job? (Y/N)&quot; in Windows console by patching cmd.exe - axil's blog
@@ -109,15 +110,15 @@ Here's the corresponding code for the 64bit version (search for the hex string &
 <span class="n">z</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">a</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">p</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">))</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-    <span class="k">print</span> <span class="s1">'patch doesn</span><span class="se">\'</span><span class="s1">t fit or file already patched'</span>
+    <span class="nb">print</span> <span class="s1">'patch doesn</span><span class="se">\'</span><span class="s1">t fit or file already patched'</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s1">'chunk found (offset </span><span class="si">%#x</span><span class="s1">), patch? (Y/n) '</span> <span class="o">%</span> <span class="n">p</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">'n'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">raw_input</span><span class="p">(</span><span class="s1">'chunk found (offset </span><span class="si">%#x</span><span class="s1">), patch? (Y/n) '</span> <span class="o">%</span> <span class="n">p</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">'n'</span><span class="p">:</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">'.bak'</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">replacement</span><span class="p">)</span>
-        <span class="k">print</span> <span class="s1">'patch successful'</span>
+        <span class="nb">print</span> <span class="s1">'patch successful'</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s1">'patching cancelled'</span>
+        <span class="nb">print</span> <span class="s1">'patching cancelled'</span>
 <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <span class="n">patch</span><span class="p">(</span><span class="s1">'c:/windows/syswow64/cmd.exe'</span><span class="p">,</span> <span class="s1">'68 28 23 00 00 68 7B 23 00 00'</span><span class="p">,</span> <span class="s1">'</span><span class="se">\x90</span><span class="s1">'</span> <span class="o">*</span> <span class="mh">0x1A</span><span class="p">)</span>

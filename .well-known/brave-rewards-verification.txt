@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: axil.github.io
+Token: de0c7582b854f85e0b44aa10b8f1eb5b99df1f00888eefe60b89ccf10014c759

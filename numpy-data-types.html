@@ -99,10 +99,10 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>      <span class="c1"># could be int64 on a different OS</span>
 <span class="n">dtype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="err">–</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>     <span class="c1"># 2**31-1 is INT_MAX for int32</span>
-<span class="o">-</span><span class="mi">2147483648</span><span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>    <span class="c1"># np.int64 because v &gt; 2**32-1</span>
+<span class="o">-</span><span class="mi">2147483648</span><span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>    <span class="c1"># always np.int64 because v &gt; 2**32-1</span>
 <span class="o">-</span><span class="mi">9223372036854775808</span>
 </pre>
-<p>For performance reasons numpy doesn’t warn you about the overflows happening with arrays — even with zero-dimensional array such as those in the example above. More realistic example where you can run into a zero-dimensional array is when you iterate over a numpy array with nditer:</p>
+<p>For performance reasons numpy doesn’t warn you about the overflows happening with arrays — even with zero-dimensional array such as those in the example above. Speaking of zero-dimensional arrays more realistic example where you can run into them is when you iterate over a numpy array with nditer:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)));</span> <span class="n">v</span>
 <span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -118,16 +118,17 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="err">–</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
 <span class="ne">FloatingPointError</span><span class="p">:</span> <span class="n">overflow</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">longlong_scalars</span>
 </pre>
-<p>— although the name FloatingPointError for an integer overflow looks a bit misleading.</p>
+<p>The reasoning behind such a discrimination is like this:</p>
 <blockquote>
-Unlike true floating point errors (where the hardware FPU sets a flag whenever it does an atomic operation that overflows), we need to implement the integer overflow detection ourselves. We do it on the scalars, but not arrays because it would be too slow to implement for every atomic operation on arrays. (Robert Kern, one of numpy core developers)</blockquote>
+Unlike true floating point errors (where the hardware FPU sets a flag whenever it does an atomic operation that overflows), we need to implement the integer overflow detection ourselves. We do it on the scalars, but not arrays because it would be too slow to implement for every atomic operation on arrays. <em>Robert Kern, one of the numpy core developers</em></blockquote>
 <p>You can make it an error</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">'raise'</span><span class="p">):</span>
 <span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="ne">FloatingPointError</span><span class="p">:</span> <span class="n">overflow</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">long_scalars</span>
 </pre>
-<p>or suppress it</p>
+<p>(although the name FloatingPointError for an <em>integer</em> overflow looks a bit misleading.)</p>
+<p>or suppress it entirely</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">):</span>
 <span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -135,7 +136,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 </pre>
 <p>But you can’t expect it to be detected when dealing with any arrays.</p>
 <p>Numpy also exposes a bunch of aliases (eg. np.intc=int in C, np.int_=long in C, etc) as an attempt to make the code closer to the underlying C code and thus more cross-platform. And yet some more aliases generally for internal usage (like np.intp=ssize_t in C, used in cython)</p>
-<p>Finally, if for some reason you need arbitrary-precision integers (python ints) in ndarrays, numpy is capable of doing it:</p>
+<p>Finally, if for some reason you need arbitrary-precision integers (python ints) in ndarrays, numpy is capable of doing it, too:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">**</span><span class="mi">1000</span><span class="p">))</span>                   <span class="c1"># '[1000...0]'</span>
@@ -204,27 +205,27 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <h2>4. Strings</h2>
 <p>Initializing a numpy array with a list of python strings packs them into a fixed-width native numpy dtype called <cite>np.str_</cite>. Reserving a space necessary to fit the longest string for every element might look wasteful (especially in the fixed USC-4 encoding as opposed to ‘dynamic’ choice of the UTF width in python str)</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="err">‘</span><span class="n">abcde</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">x</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">y</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">z</span><span class="err">’</span><span class="p">])</span>        <span class="c1"># 4 bytes per character</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">])</span>        <span class="c1"># 4 bytes per character</span>
 <span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U5'</span><span class="p">)</span> <span class="c1"># 5*4 bytes per element</span>
 </pre>
-<p>The abbreviation ‘&lt;U4’ comes from the so called array protocol and it means ‘little-endian USC-4-encoded string, 5 elements long’ (USC-4≈UTF-32, a fixed width, 4-bytes per character encoding).</p>
-<p>Another option is to keep references to python strs in the numpy array:</p>
+<p>The abbreviation ‘&lt;U4’ comes from the so called array protocol and it means ‘little-endian USC-4-encoded string, 5 elements long’ (USC-4≈UTF-32, a fixed width, 4-bytes per character encoding). Every numpy type has an abbreviation as unreadable as this one, luckily they have adopted human-readable names at least for the most used dtypes.</p>
+<p>Another option is to keep references to python strs in a numpy array of objects:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span> <span class="c1"># 1 byte ascii char</span>
 <span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>       <span class="c1"># 48+len(el) per el</span>
 </pre>
 <p>The first array totals 164 bytes, the second one is 128 bytes for the array itself +154 bytes for the three python strs.</p>
-<p>Numpy also has a fixed-length version of a python bytes type:</p>
+<p>If you're dealing with a raw sequence of bytes numpy has a fixed-length version of a python bytes type called <cite>np.bytes_</cite>:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="err">‘</span><span class="n">abcde</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">x</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">y</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">z</span><span class="err">’</span><span class="p">])</span>        <span class="c1"># 1 byte per ascii</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">])</span>        <span class="c1"># 1 byte per ascii</span>
 <span class="n">array</span><span class="p">([</span><span class="sa">b</span><span class="s1">'abcde'</span><span class="p">,</span><span class="sa">b</span><span class="s1">'x'</span><span class="p">,</span><span class="sa">b</span><span class="s1">'y'</span><span class="p">,</span><span class="sa">b</span><span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'|S5'</span><span class="p">)</span> <span class="c1"># 5 bytes per element</span>
 </pre>
-<p>Here <cite>‘|S5’</cite> means ‘endianness-unappliable sequence of bytes 5 elements long’.</p>
+<p>Here <cite>|S5</cite> means ‘endianness-unappliable sequence of bytes 5 elements long’.</p>
 <p>As for the native <cite>np.str_</cite> and <cite>np.bytes_</cite> types, numpy has a handful of common string operations mirroring str methods living in the np.char module that operate over the whole array:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="p">,</span><span class="err">’</span><span class="n">b</span><span class="err">’</span><span class="p">],[</span><span class="err">‘</span><span class="n">c</span><span class="err">’</span><span class="p">,</span><span class="err">’</span><span class="n">d</span><span class="err">’</span><span class="p">]]))</span>
-<span class="n">array</span><span class="p">([[</span><span class="err">‘</span><span class="n">A</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">B</span><span class="err">’</span><span class="p">],</span>
-<span class="p">[</span><span class="err">‘</span><span class="n">C</span><span class="err">’</span><span class="p">,</span> <span class="err">‘</span><span class="n">D</span><span class="err">’</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="err">’</span><span class="o">&lt;</span><span class="n">U1</span><span class="s1">')</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="s1">'a'</span><span class="p">,</span><span class="s1">'b'</span><span class="p">],[</span><span class="s1">'c'</span><span class="p">,</span><span class="s1">'d'</span><span class="p">]]))</span>
+<span class="n">array</span><span class="p">([[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">],</span>
+<span class="p">[</span><span class="s1">'C'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U1'</span><span class="p">)</span>
 </pre>
 <p>With object-mode strings the loops must happen on the python level:</p>
 <pre class="code python literal-block">
@@ -274,7 +275,10 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="kc">False</span>
 </pre>
 <p>and in operator for checking against a group of types:</p>
-<p>x.dtype in (np.half, np.single, np.double, np.longdouble)</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">half</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">single</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">longdouble</span><span class="p">)</span>
+<span class="kc">False</span>
+</pre>
 <p>But for more sophisticated types like <cite>np.str_</cite> or <cite>np.datetime64</cite> it doesn’t.</p>
 <p>The recommended way⁴ of checking the dtype against the abstract types is</p>
 <pre class="code python literal-block">
@@ -358,10 +362,10 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-26T01:27:20.531652+07:00">Dec 26, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-26T03:37:44.847375+07:00">Dec 26, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-26 01:27:20.531652+07:00</div>
+            <div class="last_updated">2021-12-26 03:37:44.847375+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#software-ref">software</a> 
 

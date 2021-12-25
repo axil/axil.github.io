@@ -72,9 +72,9 @@
         <div class="span8 offset2 article-content">
 
             <img alt="screenshot" src="img/cmd.png" />
-<p>Breaking the execution of a bat-file with <cite>Ctrl-C</cite> makes it stop with a ubiquitous yet pretty useless<a class="footnote-reference" href="#id3" id="id1">[*]</a>
+<p>Breaking the execution of a bat-file with <cite>Ctrl-C</cite> makes it stop with a ubiquitous yet pretty useless<a class="footnote-reference" href="#footnote-1" id="footnote-reference-1">[*]</a>
 &quot;Terminate Batch job (Y/N)?&quot; prompt.</p>
-<p>It looks like the most universal<a class="footnote-reference" href="#id4" id="id2">[†]</a> way to suppress it is to patch cmd.exe as described in <a class="reference external" href="http://itsme.home.xs4all.nl/projects/misc/patching-cmdexe.html">this blog</a>.</p>
+<p>It looks like the most universal<a class="footnote-reference" href="#footnote-2" id="footnote-reference-2">[†]</a> way to suppress it is to patch cmd.exe as described in <a class="reference external" href="http://itsme.home.xs4all.nl/projects/misc/patching-cmdexe.html">this blog</a>.</p>
 <p>In Windows 7 there're two cmd.exe: 32bit (for which the recipe above works) and 64bit (for which it doesn't).
 Here's the corresponding code for the 64bit version (search for the hex string &quot;BA 7B 23 00 00&quot; in cmd.exe):</p>
 <pre class="code literal-block">
@@ -126,16 +126,16 @@ Here's the corresponding code for the 64bit version (search for the hex string &
 </pre>
 <p>Be sure to assign the appropriate rights to the script so that it could overwrite the files.</p>
 <p>Backups are saved with '.bak' extension.</p>
-<table class="docutils footnote" frame="void" id="id3" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td>Answering 'N' will make the bat-file execution continue from the line, following the one that was interrupted by ctrl-c. I've never used it and can't think of a situation where I would.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-1">[*]</a></td><td>Answering 'N' will make the bat-file execution continue from the line, following the one that was interrupted by ctrl-c. I've never used it and can't think of a situation where I would.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id4" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[†]</a></td><td>Less universal ways include using 'start' command inside the bat-file so that it ends its execution before user has a chance to press ctrl-c. The drawback is that it opens a new window. 'start -b' doesn't, but it isolates the process from ctrl-c shortcut.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-2">[†]</a></td><td>Less universal ways include using 'start' command inside the bat-file so that it ends its execution before user has a chance to press ctrl-c. The drawback is that it opens a new window. 'start -b' doesn't, but it isolates the process from ctrl-c shortcut.</td></tr>
 </tbody>
 </table>
 
@@ -184,6 +184,9 @@ Here's the corresponding code for the 64bit version (search for the hex string &
  
             <h4>Published</h4>
             <time pubdate="pubdate" datetime="2015-05-15T10:20:00+06:00">May 15, 2015</time>
+ 
+            <h4>Last Updated</h4>
+            <div class="last_updated">2019-12-16 00:41:49.248573+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#software-ref">software</a> 
             <h4>Tags</h4>

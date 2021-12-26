@@ -98,7 +98,7 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>    <span class="c1"># always np.int64 because v &gt; 2**32-1</span>
 <span class="o">-</span><span class="mi">9223372036854775808</span>
 </pre>
-<p>For performance reasons NumPy doesn’t warn you about the overflows happening with arrays — even with zero-dimensional array such as those in the example above. Speaking of zero-dimensional arrays more realistic example where you can run into them is when you iterate over a NumPy array with nditer:</p>
+<p>For performance reasons NumPy doesn’t warn you about the overflows happening with arrays — even with zero-dimensional array such as those in the example above. Speaking of zero-dimensional arrays a more realistic example where you can run into them is when you iterate over a NumPy array with nditer:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)));</span> <span class="n">v</span>
 <span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -109,10 +109,10 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">v</span><span class="p">[()]</span>            <span class="c1"># obtaining the value of the 0-dim array</span>
 <span class="mi">3</span>
 </pre>
-<p>As for NumPy scalars — they are covered by the overflow warnings:</p>
+<p>As for NumPy scalars — they are covered by the overflow warnings (the warning is displayed only once per session to avoid flooding the output):</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="err">–</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="ne">FloatingPointError</span><span class="p">:</span> <span class="n">overflow</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">longlong_scalars</span>
+<span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">overflow</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">longlong_scalars</span>
 </pre>
 <p>The reasoning behind such a discrimination is like this:</p>
 <blockquote>
@@ -395,10 +395,10 @@ include subarrays.</p>
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-26T19:21:03.391616+07:00">Dec 26, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-26T21:38:15.881731+07:00">Dec 26, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-26 19:21:03.391616+07:00</div>
+            <div class="last_updated">2021-12-26 21:38:15.881731+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

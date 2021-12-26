@@ -118,10 +118,10 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">-</span><span class="mi">9223372036854775808</span>
 </pre>
 <p>But you can’t expect it to be detected when dealing with any arrays (even with the 0-dimensional ones!).</p>
-<p>NumPy also has a bunch of C-style aliases (eg. np.byte=np.int8, np.short=np.int16, etc), but they are getting slowly deprecated (eg <a class="reference external" href="https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated">np.long in numpy v1.20.0</a>) as 'explicit is better than implicit' (but see a present-day usage of np.longdouble below). And yet some more esotic aliases:</p>
+<p>NumPy also has a bunch of C-style aliases (eg. np.byte=np.int8, np.short=np.int16, etc), but they are getting slowly deprecated (eg <a class="reference external" href="https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated">np.long in numpy v1.20.0</a>) as 'explicit is better than implicit' (but see a present-day usage of np.longdouble below). And yet some more exotic aliases:</p>
 <ul class="simple">
-<li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int,</li>
-<li><cite>np.intp</cite> is np.int32 on 32bit python but np.int64 on 64bit python, python ≈ssize_t in C, used in cython</li>
+<li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int. Specifying <cite>np.int_</cite> as a dtype is the same thing as specifying int and means &quot;do what you would do if I didn't specify any dtype at all&quot;: np.array([1,2,3]), np.array([1,2,3], <cite>np.int_</cite>) and np.array([1,2,3], int) is the same thing.</li>
+<li><cite>np.intp</cite> is np.int32 on 32bit python but np.int64 on 64bit python, ≈ssize_t in C, used in cython</li>
 </ul>
 <p>Finally, if for some reason you need arbitrary-precision integers (Python ints) in ndarrays, NumPy is capable of doing that, too:</p>
 <pre class="code python literal-block">
@@ -185,29 +185,40 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="mi">28</span>
 </pre>
-<p>np.bool is 28 times more memory efficient than Python’s bool ) It real-world scenarios the rate is lower though: when you pack NumPy bools into an array, they will take 1 byte each, but if you pack Python bools into a list it will reference the same two values every time, costing effectively 8 bytes per element on x86_64.</p>
-<p>The underlines in <cite>bool_</cite>, <cite>int_</cite>, etc are there to avoid clashes with Python’s types. It’s a bad idea to use reserved keywords for other things, but in this case it has an additional advantage of allowing (a generally discouraged, but useful in rare cases) from NumPy import * without shadowing Python bools, ints, etc. As of today, np.bool still works but displays a deprecation warning.</p>
+<p>np.bool is 28 times more memory efficient than Python’s bool ) – though in real-world scenarios the rate is lower: when you pack NumPy bools into an array, they will take 1 byte each, but if you pack Python bools into a list it will reference the same two values every time, costing effectively 8 bytes per element on x86_64:</p>
+<img alt="NumPy Boolean Type" src="img/numpy-data-types/bools.png" />
+<p>The underlines in <cite>bool_</cite>, <cite>str_</cite>, etc are there to avoid clashes with Python’s types. It’s a bad idea to use reserved keywords for other things, but in this case it has an additional advantage of allowing (a generally discouraged, but useful in rare cases) from NumPy import * without shadowing Python bools, ints, etc. As of today, np.bool still works but displays a deprecation warning.</p>
 </div>
 <div class="section" id="strings">
 <h2>4. Strings</h2>
 <p>Initializing a NumPy array with a list of Python strings packs them into a fixed-width native NumPy dtype called <cite>np.str_</cite>. Reserving a space necessary to fit the longest string for every element might look wasteful (especially in the fixed USC-4 encoding as opposed to ‘dynamic’ choice of the UTF width in Python str)</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">])</span>        <span class="c1"># 4 bytes per character</span>
-<span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U5'</span><span class="p">)</span> <span class="c1"># 5*4 bytes per element</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">])</span>        <span class="c1"># 4 bytes per any character</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U5'</span><span class="p">)</span>  <span class="c1"># =&gt; 5*4 bytes per element</span>
 </pre>
 <p>The abbreviation ‘&lt;U4’ comes from the so called array protocol and it means ‘little-endian USC-4-encoded string, 5 elements long’ (USC-4≈UTF-32, a fixed width, 4-bytes per character encoding). Every NumPy type has an abbreviation as unreadable as this one, luckily they have adopted human-readable names at least for the most used dtypes.</p>
 <p>Another option is to keep references to Python strs in a NumPy array of objects:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span> <span class="c1"># 1 byte ascii char</span>
-<span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>       <span class="c1"># 48+len(el) per el</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="nb">object</span><span class="p">)</span>     <span class="c1"># 1 byte per ascii character</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>      <span class="c1"># =&gt; 49+len(el) per element</span>
 </pre>
-<p>The first array totals 164 bytes, the second one is 128 bytes for the array itself +154 bytes for the three Python strs.</p>
+<p>The first array memory footprint amounts to 164 bytes, the second one takes 128 bytes for the array itself + 154 bytes for the three python strs:</p>
+<img alt="NumPy Str_ Type" src="img/numpy-data-types/str.png" />
+<p>Depending on the relative lengths of the strings either one approach can be a significant win or the other.</p>
 <p>If you're dealing with a raw sequence of bytes NumPy has a fixed-length version of a Python bytes type called <cite>np.bytes_</cite>:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">])</span>        <span class="c1"># 1 byte per ascii</span>
-<span class="n">array</span><span class="p">([</span><span class="sa">b</span><span class="s1">'abcde'</span><span class="p">,</span><span class="sa">b</span><span class="s1">'x'</span><span class="p">,</span><span class="sa">b</span><span class="s1">'y'</span><span class="p">,</span><span class="sa">b</span><span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'|S5'</span><span class="p">)</span> <span class="c1"># 5 bytes per element</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="sa">b</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'x'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'y'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'z'</span><span class="p">])</span>    <span class="c1"># 1 byte per ascii character</span>
+<span class="n">array</span><span class="p">([</span><span class="sa">b</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'x'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'y'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'|S5'</span><span class="p">)</span> <span class="c1"># =&gt; 5 bytes per element</span>
 </pre>
 <p>Here <cite>|S5</cite> means ‘endianness-unappliable sequence of bytes 5 elements long’.</p>
+<p>Once again, an alternative is to store the Python <cite>bytes</cite> in the NumPy array of objects.</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="sa">b</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'x'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'z'</span><span class="p">],</span> <span class="nb">object</span><span class="p">)</span>  <span class="c1"># 1 byte per ascii character</span>
+<span class="n">array</span><span class="p">([</span><span class="sa">b</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'x'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>   <span class="c1"># =&gt; 33+len(el) per element</span>
+</pre>
+<p>This time the first array takes 124 bytes, the second one is the same 128 bytes for the array itself + 106 bytes for the three python <cite>bytes</cite>:</p>
+<img alt="NumPy Bytes_ Type" src="img/numpy-data-types/bytes.png" />
+<p>We see that <cite>str_</cite> is smaller again, yet for more diverse lengths str can take the win.</p>
 <p>As for the native <cite>np.str_</cite> and <cite>np.bytes_</cite> types, NumPy has a handful of common string operations mirroring str methods living in the np.char module that operate over the whole array:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="s1">'a'</span><span class="p">,</span><span class="s1">'b'</span><span class="p">],[</span><span class="s1">'c'</span><span class="p">,</span><span class="s1">'d'</span><span class="p">]]))</span>
@@ -376,10 +387,10 @@ include subarrays.</p>
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-27T01:40:06.187836+07:00">Dec 27, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-27T04:16:20.585274+07:00">Dec 27, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-27 01:40:06.187836+07:00</div>
+            <div class="last_updated">2021-12-27 04:16:20.585274+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

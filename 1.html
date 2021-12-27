@@ -113,7 +113,7 @@
 <p>The reasoning behind such a discrimination is like this:</p>
 <blockquote>
 Unlike true floating point errors (where the hardware FPU sets a flag whenever it does an atomic operation that overflows), we need to implement the integer overflow detection ourselves. We do it on the scalars, but not arrays because it would be too slow to implement for every atomic operation on arrays. <em>Robert Kern, one of the NumPy core developers</em></blockquote>
-<p>You can make it an error</p>
+<p>You can turn it into an error</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">'raise'</span><span class="p">):</span>
 <span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -182,12 +182,9 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <p>Both Decimal and Fraction are not native types for NumPy but it is capable of working with them with all the niceties like multi-dimensions and fancy indexing, albeight at the cost of slower processing speed than that of native ints or floats.</p>
 <p>Complex numbers are processed no differently than floats with extra convenience functions with intuitive names like np.real(z), np.imag(z), np.abs(z), np.angle(z) that work on both scalars and arrays as a whole.</p>
 <p>More insights on floats can be found in the following sources:</p>
-<p>– short and nicely illustrated <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">‘Half-Precision Floating-Point, Visualized’</a> [1]</p>
-<p>eg What’s the difference between normal and subnormal numbers?</p>
-<p>– more lengthy but very to-the-point, a dedicated website <a class="reference external" href="https://floating-point-gui.de/">‘Floating point guide’</a> [2]</p>
-<p>eg Why 0.1+0.2!=0.3?</p>
-<p>– long-read, a deep and thorough <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a> [3]</p>
-<p>eg What’s the difference between catastrophic vs benign cancellation?</p>
+<p>• short and nicely illustrated <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">‘Half-Precision Floating-Point, Visualized’</a> [1] <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between normal and subnormal numbers?</p>
+<p>• more lengthy but very to-the-point, a dedicated website <a class="reference external" href="https://floating-point-gui.de/">‘Floating point guide’</a> [2]  <br/>&nbsp;&nbsp;&nbsp;— eg Why 0.1+0.2!=0.3?</p>
+<p>• long-read, a deep and thorough <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a> [3]  <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between catastrophic vs benign cancellation?</p>
 </div>
 <div class="section" id="bools">
 <h2>3. Bools</h2>
@@ -398,10 +395,10 @@ include subarrays.</p>
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-27T19:40:34.482276+07:00">Dec 27, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-27T22:02:22.913174+07:00">Dec 27, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-27 19:40:34.482276+07:00</div>
+            <div class="last_updated">2021-12-27 22:02:22.913174+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

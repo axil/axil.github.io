@@ -71,6 +71,7 @@
 <li>Bools</li>
 <li>Strings</li>
 <li>Datetimes</li>
+<li>Combinations thereof</li>
 <li>Type Checks</li>
 </ol>
 <div class="section" id="integers">
@@ -84,7 +85,7 @@
 <span class="n">dtype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">)</span>                   <span class="c1"># int32 on windows, int64 on linux and macos</span>
 </pre>
 <p>If you’re unhappy with the flavor of the integer type that NumPy has chosen for you, you can specify one explicitly via np.array([1,2,3], np.uint8) or np.array([1,2,3], 'uint8').</p>
-<p>NumPy works best when the width is fixed now so unlike ordinary Python the value will rotate when it reaches the maximum value for the corresponding data type:</p>
+<p>NumPy works best when the width of the array elements is fixed so unlike ordinary Python the value will rotate when it reaches the maximum value for the corresponding data type:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>       <span class="c1"># or np.array([2**31-1], np.int32) on linux/macos</span>
 <span class="n">array</span><span class="p">([</span><span class="mi">2147483647</span><span class="p">])</span>
@@ -387,10 +388,10 @@ include subarrays.</p>
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-27T04:16:20.585274+07:00">Dec 27, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-27T13:25:50.055760+07:00">Dec 27, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-27 04:16:20.585274+07:00</div>
+            <div class="last_updated">2021-12-27 13:25:50.055760+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

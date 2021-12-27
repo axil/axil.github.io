@@ -88,28 +88,36 @@
 <h2>1. Integers</h2>
 <p>The integer types table in NumPy is absolutely trivial for anyone with minimal experience in C/C++:</p>
 <img alt="NumPy Integer Types" src="img/numpy-data-types/integers.png" />
-<p>Just like in C/C++, <cite>u</cite> stands for 'unsigned' and the number gives the amount of bits used to store the variable in memory (eg int64 is a 8-bytes-wide signed integer).</p>
-<p>When you feed a Python int into NumPy, it gets converted into a native NumPy type called np.int32 (or np.int64 depending on the OS, Python version and the magnitude of the initializers).</p>
+<p>Just like in C/C++, <cite>u</cite> stands for 'unsigned' and the number means the amount of bits used to store the variable in memory (eg int64 is a 8-bytes-wide signed integer).</p>
+<p>When you feed a Python int into NumPy, it gets converted into a native NumPy type called np.int32 (or np.int64 depending on the OS, Python version and the magnitude of the initializers):</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">dtype</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">dtype</span>
 <span class="n">dtype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">)</span>                   <span class="c1"># int32 on windows, int64 on linux and macos</span>
 </pre>
 <p>If you’re unhappy with the flavor of the integer type that NumPy has chosen for you, you can specify one explicitly via np.array([1,2,3], np.uint8) or np.array([1,2,3], 'uint8').</p>
-<p>NumPy works best when the width of the array elements is fixed so unlike ordinary Python the value will rotate when it reaches the maximum value for the corresponding data type:</p>
+<p>NumPy works best when the width of the array elements is fixed. It is faster and takes less memory, but unlike an ordinary Python int (that works in arbitrary precision arithmetic) the value will wrap when it crosses the maximum (or minimum) value for the corresponding data type:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>       <span class="c1"># or np.array([2**31-1], np.int32) on linux/macos</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># 2**8-1 is INT_MAX for uint8</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">uint8</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>           <span class="c1"># 2**31-1 is INT_MAX for int32</span>
 <span class="n">array</span><span class="p">([</span><span class="mi">2147483647</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="err">–</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span>     <span class="c1"># 2**31-1 is INT_MAX for int32</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="err">–</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>       <span class="c1"># or np.array([2**31-1], np.int32)+1 on linux</span>
 <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">2147483648</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span>     <span class="c1"># always np.int64 since v &gt; 2**32-1</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>       <span class="c1"># always np.int64 since v &gt; 2**32-1</span>
 <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">])</span>
 </pre>
-<p>NumPy doesn’t warn you about the overflows happening with arrays – only about scalars, and (to avoid flooding the output with warnings) only once:</p>
+<p>— not even a warning!</p>
+<p>As for numpy scalars, NumPy first tries it best to promote the value to a wider type, or, if there is none, fires the overflow warning (to avoid flooding the output with warnings—only once):</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="err">–</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>       <span class="c1"># warning</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>   <span class="c1"># ok, promoted to int32(win)/int64(linux)</span>
+<span class="mi">256</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>         <span class="c1"># warning!</span>
 <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">overflow</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">long_scalars</span>
-<span class="o">-</span><span class="mi">9223372036854775808</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="err">–</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>       <span class="c1"># ok!</span>
+<span class="o">-</span><span class="mi">2147483648</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>         <span class="c1"># ok, warned already</span>
 <span class="o">-</span><span class="mi">9223372036854775808</span>
 </pre>
 <p>The reasoning behind such a discrimination is like this:</p>
@@ -125,10 +133,10 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <p>or suppress it entirely</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">):</span>
-<span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">64</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-<span class="o">-</span><span class="mi">9223372036854775808</span>
+<span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">-</span><span class="mi">2147483648</span>
 </pre>
-<p>But you can’t expect it to be detected when dealing with any arrays (even with the 0-dimensional ones!).</p>
+<p>But you can’t expect it to be detected when dealing with arrays (even with the 0-dimensional ones!).</p>
 <p>NumPy also has a bunch of C-style aliases (eg. np.byte=np.int8, np.short=np.int16, etc), but they are getting slowly deprecated (eg <a class="reference external" href="https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated">np.long in numpy v1.20.0</a>) as 'explicit is better than implicit' (but see a present-day usage of np.longdouble below). And yet some more exotic aliases:</p>
 <ul class="simple">
 <li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int. Specifying <cite>np.int_</cite> as a dtype is the same thing as specifying int and means &quot;do what you would do if I didn't specify any dtype at all&quot;: np.array([1,2,3]), np.array([1,2,3], <cite>np.int_</cite>) and np.array([1,2,3], int) is the same thing.</li>
@@ -144,11 +152,11 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 </div>
 <div class="section" id="floats">
 <h2>2. Floats</h2>
-<p>As Python did not diverge from IEEE 754-standardized C double type, the floattype transition from Python to NumPy is pretty much hassle-free:</p>
+<p>As Python did not diverge from IEEE 754-standardized C double type, the floating type transition from Python to NumPy is pretty much hassle-free:</p>
 <img alt="NumPy Floating Types" src="img/numpy-data-types/floats.png" />
-<p>* This is the number reported by np.finfo(np.floatnn).precision. As usual with floats, depending on what you mean by significant digits it may be 15 (FLT_DIG) or 17 (FLT_DECIMAL_DIG) for float64, etc.</p>
-<p>** Support for np.float128 is somewhat limited: it is unix-only (not available on windows). Also the names float96/float128 are highly misleading. Under the hood it is not __float128 but whichever longdouble means in the local C++ flavor. On x86_64 linux it is float80 (padded with zeros to for memory alignment) which is certainly wider than float64, but it comes at the cost of the processing speed. Also you risk losing precision if you inadvertently convert to Python float type. For better portability it is recommended to use an alias np.longdouble instead of np.float96 / np.float128 because that’s what will be used internally anyway.</p>
-<p>Just like in Python NumPy floats exactly represent integers - but only below a certain level (limited by the number of the significant digits):</p>
+<p>* <em>This is the number reported by np.finfo(np.float&lt;nn&gt;).precision. As usual with floats, depending on what you mean by significant digits it may be 15 (FLT_DIG) or 17 (FLT_DECIMAL_DIG) for float64, etc.</em></p>
+<p>** <em>Support for np.float128 is somewhat limited: it is unix-only (=linux and mac; not available on windows). Also the names float96/float128 are highly misleading. Under the hood it is not __float128 but whichever longdouble means in the local C++ flavor. On x86_64 linux it is float80 (padded with zeros for memory alignment) which is certainly wider than float64, but comes at the cost of slower processing speed. Also you risk losing precision if you inadvertently convert it to Python float type (which is 64bit wide). For better portability it is recommended to use an alias np.longdouble instead of np.float96 / np.float128 because that’s what will be used internally anyway.</em></p>
+<p>Just like in pure Python, NumPy floats exactly represent integers—but only below a certain level (limited by the number of the significant digits):</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">24</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">);</span> <span class="n">a</span>    <span class="c1"># 2^(mantissa_bits+1)</span>
 <span class="n">array</span><span class="p">([</span><span class="mf">16777216.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
@@ -159,16 +167,17 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="s1">'9279945539648888'</span><span class="p">)</span> <span class="c1"># Don't trust the 16th decimal digit!</span>
 <span class="mi">16</span>
 </pre>
-<p>Also exactly representable are fractions like 0.5, 0.125, 0.875 where the denominator is a power of 2 (0.5=1/2, 0.125=1/8, 0.875 =7/8, etc). Any other denominator will result in a rounding error so that 0.1+0.2!=0.3. The standard approach of dealing with this problem is to compare them with a relative tolerance (to compare two non-zero arguments) and absolute tolerance (if one of the arguments is zero). For scalars it is handled by <cite>math.isclose(a, b, *, rel_tol=1e-09, abs_tol=0.0)</cite>, for NumPy arrays there’s a vector version <cite>np.isclose(a, b, rtol=1e-05, atol=1e-08)</cite>. Note that the tolerances have different names and defaults.</p>
-<p>For the financial data decimal.Decimal type is handy as it involves no additional tolerances at all:</p>
+<p>Also exactly representable are fractions like 0.5, 0.125, 0.875 where the denominator is a power of 2 (0.5=1/2, 0.125=1/8, 0.875 =7/8, etc).</p>
+<p>Any other denominator will result in a rounding error so that 0.1+0.2!=0.3. The standard approach of dealing with this problem is to compare them with a relative tolerance (to compare two non-zero arguments) and absolute tolerance (if one of the arguments is zero). For scalars it is handled by <cite>math.isclose(a, b, *, rel_tol=1e-09, abs_tol=0.0)</cite>, for NumPy arrays there’s a vectorized version <cite>np.isclose(a, b, rtol=1e-05, atol=1e-08)</cite>. Note that the tolerance arguments have different names and defaults.</p>
+<p>For the financial data decimal.Decimal type is handy as it involves no tolerances at all:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="n">Decimal</span> <span class="k">as</span> <span class="n">D</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">D</span><span class="p">(</span><span class="s1">'0.1'</span><span class="p">),</span> <span class="n">D</span><span class="p">(</span><span class="s1">'0.2'</span><span class="p">)]);</span> <span class="n">a</span>
 <span class="n">array</span><span class="p">([</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">'0.1'</span><span class="p">),</span> <span class="n">Decimal</span><span class="p">(</span><span class="s1">'0.2'</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>                     <span class="c1"># == Decimal('0.3'), exactly</span>
 <span class="n">Decimal</span><span class="p">(</span><span class="s1">'0.3'</span><span class="p">)</span>
 </pre>
-<p>But it is not a silver bullet: it also has rounding errors. The only problem it solves is the exact representation of decimal numbers that humans are used to. Plus it doesn’t support anything more complicated than arithmetic operations and a square root and runs slower than floats.</p>
+<p>But Decimal type is not a silver bullet: it also has rounding errors. The only problem it solves is the exact representation of decimal fractions that humans are so used to. Plus it doesn’t support anything more complicated than arithmetic operations and a square root and runs slower than floats.</p>
 <p>For pure mathematic calculations fractions.Fraction can be used:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">fractions</span> <span class="kn">import</span> <span class="n">Fraction</span>
@@ -179,15 +188,16 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="n">Fraction</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </pre>
-<p>It can represent any rational numbers, but pi and exp are out of luck )</p>
+<p>It can represent any rational number, but pi and exp are out of luck )</p>
 <p>Both Decimal and Fraction are not native types for NumPy but it is capable of working with them with all the niceties like multi-dimensions and fancy indexing, albeight at the cost of slower processing speed than that of native ints or floats.</p>
 <p>Complex numbers are processed no differently than floats with extra convenience functions with intuitive names like np.real(z), np.imag(z), np.abs(z), np.angle(z) that work on both scalars and arrays as a whole.</p>
 <p>More insights on floats can be found in the following sources:</p>
-<ul class="simple">
-<li>short and nicely illustrated ‘Half precision floating point visualized¹’ (eg what’s the difference between normal and subnormal numbers)</li>
-<li>more lengthy but very to-the-point, a dedicated website ‘Floating point guide²’ (eg why 0.1+0.2!=0.3)</li>
-<li>long-read, a deep and thorough ‘What every computer scientist should know about floating-point arithmetic³’ (eg what’s the difference between catastrophic vs benign cancellation)</li>
-</ul>
+<p>– short and nicely illustrated <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">‘Half-Precision Floating-Point, Visualized’</a> [1]</p>
+<p>eg What’s the difference between normal and subnormal numbers?</p>
+<p>– more lengthy but very to-the-point, a dedicated website <a class="reference external" href="https://floating-point-gui.de/">‘Floating point guide’</a> [2]</p>
+<p>eg Why 0.1+0.2!=0.3?</p>
+<p>– long-read, a deep and thorough <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a> [3]</p>
+<p>eg What’s the difference between catastrophic vs benign cancellation?</p>
 </div>
 <div class="section" id="bools">
 <h2>3. Bools</h2>
@@ -215,7 +225,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 </pre>
 <p>The first array memory footprint amounts to 164 bytes, the second one takes 128 bytes for the array itself + 154 bytes for the three python strs:</p>
 <img alt="NumPy Str_ Type" src="img/numpy-data-types/str.png" />
-<p>Depending on the relative lengths of the strings either one approach can be a significant win or the other.</p>
+<p>Depending on the relative lengths of the strings and the number of the repeated string either one approach can be a significant win or the other.</p>
 <p>If you're dealing with a raw sequence of bytes NumPy has a fixed-length version of a Python bytes type called <cite>np.bytes_</cite>:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="sa">b</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'x'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'y'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'z'</span><span class="p">])</span>    <span class="c1"># 1 byte per ascii character</span>
@@ -408,10 +418,10 @@ include subarrays.</p>
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-27T13:25:50.055760+07:00">Dec 27, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-27T19:40:34.482276+07:00">Dec 27, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-27 13:25:50.055760+07:00</div>
+            <div class="last_updated">2021-12-27 19:40:34.482276+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

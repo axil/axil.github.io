@@ -72,9 +72,9 @@
         <div class="span8 offset2 article-content">
 
             <img alt="NumPy Types Diagram" src="img/numpy-data-types/numpy_types_diagram.png" />
-<p>NumPy, a Python library for efficient processing of n-dimentional arrays, is pretty omnivorous when it comes to data types: it can handle just everything.</p>
+<p>NumPy, one of the most popular Python libraries for both data science and scientific computing, is pretty omnivorous when it comes to data types: it can handle just everything.</p>
 <p>It has its own set of ‘native’ types which it is capable of processing at full speed but it can also work with pretty much anything known to Python.</p>
-<p>Outline</p>
+<p>The article consists of 7 parts:</p>
 <ol class="arabic simple">
 <li>Integers</li>
 <li>Floats (including Fractions and Decimals)</li>
@@ -88,14 +88,15 @@
 <h2>1. Integers</h2>
 <p>The integer types table in NumPy is absolutely trivial for anyone with minimal experience in C/C++:</p>
 <img alt="NumPy Integer Types" src="img/numpy-data-types/integers.png" />
-<p>Just like in C/C++, <cite>u</cite> stands for 'unsigned' and the number means the amount of bits used to store the variable in memory (eg int64 is a 8-bytes-wide signed integer).</p>
+<p>Just like in C/C++, <cite>u</cite> stands for 'unsigned' and the number is the amount of bits used to store the variable in memory (eg int64 is a 8-bytes-wide signed integer).</p>
 <p>When you feed a Python int into NumPy, it gets converted into a native NumPy type called np.int32 (or np.int64 depending on the OS, Python version and the magnitude of the initializers):</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">dtype</span>
 <span class="n">dtype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">)</span>                   <span class="c1"># int32 on windows, int64 on linux and macos</span>
 </pre>
-<p>If you’re unhappy with the flavor of the integer type that NumPy has chosen for you, you can specify one explicitly via np.array([1,2,3], np.uint8) or np.array([1,2,3], 'uint8').</p>
+<p>If you’re unhappy with the 'flavor' of the integer type that NumPy has chosen for you, you can specify one explicitly: np.array([1,2,3], np.uint8) or np.array([1,2,3], 'uint8').</p>
 <p>NumPy works best when the width of the array elements is fixed. It is faster and takes less memory, but unlike an ordinary Python int (that works in arbitrary precision arithmetic) the value will wrap when it crosses the maximum (or minimum) value for the corresponding data type:</p>
+<img alt="Int Wrapping" src="img/numpy-data-types/int_wrapping.png" />
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># 2**8-1 is INT_MAX for uint8</span>
 <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">uint8</span><span class="p">)</span>
@@ -109,8 +110,8 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>       <span class="c1"># always np.int64 since v &gt; 2**32-1</span>
 <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">])</span>
 </pre>
-<p>— not even a warning!</p>
-<p>As for numpy scalars, NumPy first tries it best to promote the value to a wider type, or, if there is none, fires the overflow warning (to avoid flooding the output with warnings—only once):</p>
+<p>— not even a warning here!</p>
+<p>With scalars it is a different story: first NumPy tries it best to promote the value to a wider type, then, if there is none, fires the overflow warning (to avoid flooding the output with warnings—only once):</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>   <span class="c1"># ok, promoted to int32(win)/int64(linux)</span>
 <span class="mi">256</span>
@@ -123,23 +124,24 @@
 <p>The reasoning behind such a discrimination is like this:</p>
 <blockquote>
 Unlike true floating point errors (where the hardware FPU sets a flag whenever it does an atomic operation that overflows), we need to implement the integer overflow detection ourselves. We do it on the scalars, but not arrays because it would be too slow to implement for every atomic operation on arrays. <em>Robert Kern, one of the NumPy core developers</em></blockquote>
-<p>You can turn it into an error</p>
+<p>You can turn it into an error:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">'raise'</span><span class="p">):</span>
 <span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="ne">FloatingPointError</span><span class="p">:</span> <span class="n">overflow</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">long_scalars</span>
 </pre>
 <p>(although the name FloatingPointError for an <em>integer</em> overflow looks a bit misleading.)</p>
-<p>or suppress it entirely</p>
+<p>... or suppress it entirely:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">):</span>
 <span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="o">-</span><span class="mi">2147483648</span>
 </pre>
 <p>But you can’t expect it to be detected when dealing with arrays (even with the 0-dimensional ones!).</p>
-<p>NumPy also has a bunch of C-style aliases (eg. np.byte=np.int8, np.short=np.int16, etc), but they are getting slowly deprecated (eg <a class="reference external" href="https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated">np.long in numpy v1.20.0</a>) as 'explicit is better than implicit' (but see a present-day usage of np.longdouble below). And yet some more exotic aliases:</p>
+<p>NumPy also has a bunch of C-style aliases (eg. np.byte np.int8, np.short=np.int16, np.intc=int whichever width it has in C etc), but they are getting gradually phased out (eg <a class="reference external" href="https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated">deprecation of np.long in NumPy v1.20.0</a>) as 'explicit is better than implicit' (but see a present-day usage of np.longdouble below).</p>
+<p>And yet some more exotic aliases:</p>
 <ul class="simple">
-<li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int. Specifying <cite>np.int_</cite> as a dtype is the same thing as specifying int and means &quot;do what you would do if I didn't specify any dtype at all&quot;: np.array([1,2,3]), np.array([1,2,3], <cite>np.int_</cite>) and np.array([1,2,3], int) is the same thing.</li>
+<li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int. Specifying <cite>np.int_</cite> as a dtype is the same thing as specifying int and means &quot;do what you would do if I didn't specify any dtype at all&quot;: np.array([1,2,3]), np.array([1,2,3], <cite>np.int_</cite>) and np.array([1,2,3], int) are all the same thing.</li>
 <li><cite>np.intp</cite> is np.int32 on 32bit python but np.int64 on 64bit python, ≈ssize_t in C, used in cython</li>
 </ul>
 <p>Finally, if for some reason you need arbitrary-precision integers (Python ints) in ndarrays, NumPy is capable of doing that, too:</p>
@@ -154,7 +156,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <h2>2. Floats</h2>
 <p>As Python did not diverge from IEEE 754-standardized C double type, the floating type transition from Python to NumPy is pretty much hassle-free:</p>
 <img alt="NumPy Floating Types" src="img/numpy-data-types/floats.png" />
-<p>* <em>This is the number reported by np.finfo(np.float&lt;nn&gt;).precision. As usual with floats, depending on what you mean by significant digits it may be 15 (FLT_DIG) or 17 (FLT_DECIMAL_DIG) for float64, etc.</em></p>
+<p>* <em>This is the number reported by np.finfo(np.float&lt;nn&gt;).precision. As usual with floats, depending on what you mean by significant digits it may be</em> <br/>&nbsp;&nbsp;&nbsp;<em>– 15</em> (<a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/digits10">FLT_DIG</a>) <em>or 17</em> ( <a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/max_digits10">FLT_DECIMAL_DIG</a>) <em>for np.float64,</em> <br/>&nbsp;&nbsp;&nbsp;<em>– 6 (FLT_DIG) or 9 (FLT_DECIMAL_DIG) for np.float32, etc.</em></p>
 <p>** <em>Support for np.float128 is somewhat limited: it is unix-only (=linux and mac; not available on windows). Also the names float96/float128 are highly misleading. Under the hood it is not __float128 but whichever longdouble means in the local C++ flavor. On x86_64 linux it is float80 (padded with zeros for memory alignment) which is certainly wider than float64, but comes at the cost of slower processing speed. Also you risk losing precision if you inadvertently convert it to Python float type (which is 64bit wide). For better portability it is recommended to use an alias np.longdouble instead of np.float96 / np.float128 because that’s what will be used internally anyway.</em></p>
 <p>Just like in pure Python, NumPy floats exactly represent integers—but only below a certain level (limited by the number of the significant digits):</p>
 <pre class="code python literal-block">
@@ -189,23 +191,23 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="n">Fraction</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </pre>
 <p>It can represent any rational number, but pi and exp are out of luck )</p>
-<p>Both Decimal and Fraction are not native types for NumPy but it is capable of working with them with all the niceties like multi-dimensions and fancy indexing, albeight at the cost of slower processing speed than that of native ints or floats.</p>
+<p>Both Decimal and Fraction are not native types for NumPy but it is capable of working with them with all the niceties like multi-dimensions and fancy indexing, albeit at the cost of slower processing speed than that of native ints or floats.</p>
 <p>Complex numbers are processed no differently than floats with extra convenience functions with intuitive names like np.real(z), np.imag(z), np.abs(z), np.angle(z) that work on both scalars and arrays as a whole.</p>
 <p>More insights on floats can be found in the following sources:</p>
-<p>• short and nicely illustrated <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">‘Half-Precision Floating-Point, Visualized’</a> [1] <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between normal and subnormal numbers?</p>
-<p>• more lengthy but very to-the-point, a dedicated website <a class="reference external" href="https://floating-point-gui.de/">‘Floating point guide’</a> [2]  <br/>&nbsp;&nbsp;&nbsp;— eg Why 0.1+0.2!=0.3?</p>
-<p>• long-read, a deep and thorough <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a> [3]  <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between catastrophic vs benign cancellation?</p>
+<p>• short and nicely illustrated <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">‘Half-Precision Floating-Point, Visualized’</a> [2] <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between normal and subnormal numbers?</p>
+<p>• more lengthy but very to-the-point, a dedicated website <a class="reference external" href="https://floating-point-gui.de/">‘Floating point guide’</a> [3]  <br/>&nbsp;&nbsp;&nbsp;— eg Why 0.1+0.2!=0.3?</p>
+<p>• long-read, a deep and thorough <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a> [4]  <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between catastrophic vs benign cancellation?</p>
 </div>
 <div class="section" id="bools">
 <h2>3. Bools</h2>
-<p>The boolean values are stored as single bytes for better performance. <cite>np.bool_</cite> is a separate type from Python’s bool because it doesn’t need reference counting and a link to the baseclass required for any pure Python type. So if you think that using 8 bits to store one bit of information is excessive look at this:</p>
+<p>The boolean values are stored as single bytes for better performance. <cite>np.bool_</cite> is a separate type from Python’s bool because it doesn’t need reference counting and a link to the base class required for any pure Python type. So if you think that using 8 bits to store one bit of information is excessive look at this:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="mi">28</span>
 </pre>
 <p>np.bool is 28 times more memory efficient than Python’s bool ) – though in real-world scenarios the rate is lower: when you pack NumPy bools into an array, they will take 1 byte each, but if you pack Python bools into a list it will reference the same two values every time, costing effectively 8 bytes per element on x86_64:</p>
 <img alt="NumPy Boolean Type" src="img/numpy-data-types/bools.png" />
-<p>The underlines in <cite>bool_</cite>, <cite>str_</cite>, etc are there to avoid clashes with Python’s types. It’s a bad idea to use reserved keywords for other things, but in this case it has an additional advantage of allowing (a generally discouraged, but useful in rare cases) from NumPy import * without shadowing Python bools, ints, etc. As of today, np.bool still works but displays a deprecation warning.</p>
+<p>The underlines in <cite>bool_</cite>, <cite>int_</cite>, etc are there to avoid clashes with Python’s types. It’s a bad idea to use reserved keywords for other things, but in this case it has an additional advantage of allowing (a generally discouraged, but useful in rare cases) from NumPy import * without shadowing Python bools, ints, etc. As of today, np.bool still works but displays a deprecation warning.</p>
 </div>
 <div class="section" id="strings">
 <h2>4. Strings</h2>
@@ -214,7 +216,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">])</span>        <span class="c1"># 4 bytes per any character</span>
 <span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U5'</span><span class="p">)</span>  <span class="c1"># =&gt; 5*4 bytes per element</span>
 </pre>
-<p>The abbreviation ‘&lt;U4’ comes from the so called array protocol and it means ‘little-endian USC-4-encoded string, 5 elements long’ (USC-4≈UTF-32, a fixed width, 4-bytes per character encoding). Every NumPy type has an abbreviation as unreadable as this one, luckily they have adopted human-readable names at least for the most used dtypes.</p>
+<p>The abbreviation ‘&lt;U4’ comes from the so called array protocol introduced in 2005. It means ‘little-endian USC-4-encoded string, 5 elements long’ (USC-4≈UTF-32, a fixed width, 4-bytes per character encoding). Every NumPy type has an abbreviation as unreadable as this one, luckily have they adopted human-readable names at least for the most used dtypes.</p>
 <p>Another option is to keep references to Python strs in a NumPy array of objects:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'abcde'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="s1">'z'</span><span class="p">],</span> <span class="nb">object</span><span class="p">)</span>     <span class="c1"># 1 byte per ascii character</span>
@@ -253,7 +255,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 </div>
 <div class="section" id="datetimes">
 <h2>5. Datetimes</h2>
-<p>An interesting data type, capable of counting time with selectable granularity — from years to attoseconds (an aspect in which other datetime libs tend to rely on the underlying OS) — represented invariably by int64.</p>
+<p>An interesting data type, capable of counting time with a configurable granularity — from years to attoseconds (an aspect in which other datetime libs tend to rely on the underlying OS) — represented invariably by a single int64 number.</p>
 <p>Years granularity means ‘just count the years’ — no real improvement against storing years as an integer. Days granularity is the equivalent of Python’s datetime.date. Microseconds (or nanoseconds depending on the OS) is the equivalent of Python’s datetime.datetime. And everything below is unique to np.datetime64.</p>
 <p>When creating an array you choose if you are ok with the default microseconds or you insist on nanoseconds or what not and it’ll give you 2⁶³ equidistant moments measured in the corresponding units of time to either side of 1 Jan 1970.</p>
 <pre class="code python literal-block">
@@ -264,12 +266,12 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 </div>
 <div class="section" id="combinations-thereof">
 <h2>6. Combinations thereof</h2>
-<p>A structured dtype allows to create a custom type using the types described above as the basic building blocks. Typical example is an RGB pixel: a 4 bytes long type, in which the colors can be accessed by name:</p>
+<p>A structured array is an array with a custom dtype made from the types described above as the basic building blocks. Typical example is an RGB pixel color: a 4 bytes long type, in which the colors can be accessed by name:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span> <span class="n">a</span>
 <span class="n">array</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
-    <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
+      <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'x'</span><span class="p">]</span>
@@ -277,11 +279,11 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'x'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
 <span class="n">array</span><span class="p">([(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
-    <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
+      <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
 <span class="n">array</span><span class="p">([(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)],</span>
-    <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
+      <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
 </pre>
 <p>To be able to access the fields as attributes, a recarray can be used:</p>
 <pre class="code python literal-block">
@@ -293,9 +295,9 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="mi">10</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">y</span><span class="o">=</span><span class="mi">7</span><span class="p">;</span> <span class="n">b</span>
 <span class="n">rec</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">)],</span>
-  <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
+          <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
 </pre>
-<p>Sure enough, recarray can be created on its own, without being a view of something else.
+<p>Here it works like reinterpret_cast in C++, but sure enough, recarray can be created on its own, without being a view of something else.
 Types for structured dtypes do not necessarily need to be homogenic and can even
 include subarrays.</p>
 </div>
@@ -333,7 +335,7 @@ include subarrays.</p>
 <span class="kc">False</span>
 </pre>
 <p>But for more sophisticated types like <cite>np.str_</cite> or <cite>np.datetime64</cite> it doesn’t.</p>
-<p>The recommended way⁴ of checking the dtype against the abstract types is</p>
+<p>The recommended way [5] of checking the dtype against the abstract types is</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
 <span class="kc">True</span>
@@ -415,10 +417,10 @@ include subarrays.</p>
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-27T22:02:22.913174+07:00">Dec 27, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-28T02:37:27.184554+07:00">Dec 28, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-27 22:02:22.913174+07:00</div>
+            <div class="last_updated">2021-12-28 02:37:27.184554+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

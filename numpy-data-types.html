@@ -255,7 +255,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 </div>
 <div class="section" id="datetimes">
 <h2>5. Datetimes</h2>
-<p>An interesting data type, capable of counting time with a configurable granularity — from years to attoseconds (an aspect in which other datetime libs tend to rely on the underlying OS) — represented invariably by a single int64 number.</p>
+<p>NumPy introduces an interesting data type, similar to a POSIX timestamp (aka Unix time, the number of seconds since 1 Jan 1970) but capable of counting time with a configurable granularity—from years to attoseconds (an aspect in which other datetime libraries tend to rely on the underlying OS)—represented invariably by a single int64 number.</p>
 <p>Years granularity means ‘just count the years’ — no real improvement against storing years as an integer. Days granularity is the equivalent of Python’s datetime.date. Microseconds (or nanoseconds depending on the OS) is the equivalent of Python’s datetime.datetime. And everything below is unique to np.datetime64.</p>
 <p>When creating an array you choose if you are ok with the default microseconds or you insist on nanoseconds or what not and it’ll give you 2⁶³ equidistant moments measured in the corresponding units of time to either side of 1 Jan 1970.</p>
 <pre class="code python literal-block">
@@ -265,7 +265,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>   <span class="c1"># us is too coarse for me!</span>
 <span class="n">array</span><span class="p">([</span><span class="s1">'2021-12-24T18:14:00.403438000'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
 </pre>
-<p>As in pure python, np.datetime64 is accompained by np.timedelta64 (stored as a single np.uint64) with the expectable arithmetic operators.</p>
+<p>As in pure python, np.datetime64 is accompained by np.timedelta64 (stored as a single np.int64) with the expectable arithmetic operators.</p>
 <p>For example, to calculate the number of seconds until the New Year</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">());</span> <span class="n">z</span>
@@ -293,12 +293,18 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
     <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'2020-02-01'</span><span class="p">,</span> <span class="s1">'2022-02-01'</span><span class="p">,</span> <span class="s1">'2024-02-01'</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span>
 <span class="n">array</span><span class="p">([</span><span class="mi">29</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'timedelta64[D]'</span><span class="p">)</span>
 </pre>
-<p>Leap seconds are not (but proposed):</p>
+<p>Leap seconds are not:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2017-01-01'</span><span class="p">)</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2016-12-31T23:59:00'</span><span class="p">)</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="s1">'s'</span><span class="p">)</span>
 </pre>
-<p>One downside of np.datetime64 is that all the times are naive: they know nothing of daylight saving and are not capable of being converted from one timezone to another. So it is not a replacement for datetime+pytz, rather a complement to it.</p>
+<p>To be fair, neither datetime.datetime nor pytz count them, either (although in general <a class="reference external" href="https://stackoverflow.com/questions/19332902/extract-historic-leap-seconds-from-tzdata">it is possible</a> with pytz). It looks as if only astropy <a class="reference external" href="https://het.as.utexas.edu/HET/Software/Astropy-1.0/api/astropy.time.TimeGPS.html">calculates</a> them correctly, others adhere to <a class="reference external" href="https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar">proleptic Gregorian calendar</a> with its exactly 86400 SI seconds a day that has already gained about half a minute difference with solar time since 1970 (due to irregularities of the Earth rotation).</p>
+<p>As both np.datetime64 and np.timedelta64 have the same width, care must be taken with large timedeltas:</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2262-01-01'</span><span class="p">,</span> <span class="s1">'ns'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'1678-01-01'</span><span class="p">,</span> <span class="s1">'ns'</span><span class="p">)</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="o">-</span><span class="mi">17537673709551616</span><span class="p">,</span><span class="s1">'ns'</span><span class="p">)</span>
+</pre>
+<p>Also note that all the times in np.datetime64 are 'naive': they are not aware of daylight saving and are not capable of being converted from one timezone to another. So it is not a replacement for datetime + <a class="reference external" href="http://pytz.sourceforge.net/">pytz</a> , rather a complement to it.</p>
 </div>
 <div class="section" id="combinations-thereof">
 <h2>6. Combinations thereof</h2>
@@ -455,10 +461,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-28T19:43:41.858699+07:00">Dec 28, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-29T03:03:14.666387+07:00">Dec 29, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-28 19:43:41.858699+07:00</div>
+            <div class="last_updated">2021-12-29 03:03:14.666387+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

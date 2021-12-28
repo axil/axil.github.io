@@ -262,7 +262,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span>
 <span class="n">array</span><span class="p">([</span><span class="s1">'2021-12-24T18:14:00.403438'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[us]'</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>   <span class="c1"># us is too slow for me!</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>   <span class="c1"># us is too coarse for me!</span>
 <span class="n">array</span><span class="p">([</span><span class="s1">'2021-12-24T18:14:00.403438000'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
 </pre>
 <p>As in pure python, np.datetime64 is accompained by np.timedelta64 (stored as a single np.uint64) with the expectable arithmetic operators.</p>
@@ -282,12 +282,12 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="s1">'s'</span><span class="p">)</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">295259</span><span class="p">,</span><span class="s1">'s'</span><span class="p">)</span>
 </pre>
-<p>The (official!) <a class="reference external" href="https://en.wikipedia.org/wiki/Day_of_the_Programmer">Day of the Programmer</a> in Russia in 2022 happens to be on</p>
+<p>The (official!) <a class="reference external" href="https://en.wikipedia.org/wiki/Day_of_the_Programmer">Day of the Programmer</a> in Russia is celebrated on the 256th day of the year:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">)</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-09-14'</span><span class="p">)</span>
 </pre>
-<p>Leap seconds are supported:</p>
+<p>Leap years are supported:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'2020-03-01'</span><span class="p">,</span> <span class="s1">'2022-03-01'</span><span class="p">,</span> <span class="s1">'2024-03-01'</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span> <span class="o">-</span> \
     <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'2020-02-01'</span><span class="p">,</span> <span class="s1">'2022-02-01'</span><span class="p">,</span> <span class="s1">'2024-02-01'</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span>
@@ -455,10 +455,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-28T18:12:35.313460+07:00">Dec 28, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-28T19:43:41.858699+07:00">Dec 28, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-28 18:12:35.313460+07:00</div>
+            <div class="last_updated">2021-12-28 19:43:41.858699+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

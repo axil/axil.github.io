@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="Lev Maximov" />
         <meta name="copyright" content="Lev Maximov" />
+        <link rel="canonical" href="https://medium.com/@levmaximov/8f62cb57ea83?sk=a417246f0cf9e24aca734525711299d3">
         <meta name="monetization" content="$ilp.uphold.com/y4ZnwiyRnb8i" />
 
 <meta name="keywords" content=", numpy-data-types, " />
@@ -377,6 +378,13 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 <span class="kc">False</span>
 </pre>
 <p>It works with all native NumPy types, but the necessity of this method looks somewhat non-obvious: what’s wrong with good oldisinstance? Obviously the complexity of dtypes inheritance structure (they are constructed ‘on the fly’!) didn’t allow to do it according to principle of least astonishment.</p>
+<p>If you have Pandas, you can use</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer_dtype</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="kc">False</span>
+</pre>
 <p>Yet another method is to use (undocumented, but used in SciPy/NumPy code bases) np.typecodes dictionary. The tree it represents is way less branchy:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span>
@@ -441,10 +449,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-29T03:21:17.753557+07:00">Dec 29, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-29T22:53:09.160491+07:00">Dec 29, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-29 03:21:17.753557+07:00</div>
+            <div class="last_updated">2021-12-29 22:53:09.160491+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

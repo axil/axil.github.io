@@ -98,6 +98,7 @@
 <p>If you’re unhappy with the 'flavor' of the integer type that NumPy has chosen for you, you can specify one explicitly: np.array([1,2,3], np.uint8) or np.array([1,2,3], 'uint8').</p>
 <p>NumPy works best when the width of the array elements is fixed. It is faster and takes less memory, but unlike an ordinary Python int (that works in arbitrary precision arithmetic) the value will wrap when it crosses the maximum (or minimum) value for the corresponding data type:</p>
 <img alt="Int Wrapping" src="img/numpy-data-types/int_wrapping.png" />
+<p>* <em>Strictly speaking, the C standard defines this wraparound only for the unsigned integers; the overflow behavior for the signed integers is undefined, but this is how it works in reality except maybe on some very exotic platforms.</em></p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># 2**8-1 is INT_MAX for uint8</span>
 <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">uint8</span><span class="p">)</span>
@@ -514,10 +515,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-30T05:04:51.928100+07:00">Dec 30, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-30T05:36:35.036359+07:00">Dec 30, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-30 05:04:51.928100+07:00</div>
+            <div class="last_updated">2021-12-30 05:36:35.036359+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

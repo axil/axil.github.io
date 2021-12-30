@@ -169,7 +169,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <p>As Python did not diverge from IEEE 754-standardized C double type, the floating type transition from Python to NumPy is pretty much hassle-free:</p>
 <img alt="NumPy Floating Types" src="img/numpy-data-types/floats.png" />
 <p>* <em>This is the number reported by np.finfo(np.float&lt;nn&gt;).precision. As usual with floats, depending on what you mean by significant digits it may be</em> <br/>&nbsp;&nbsp;&nbsp;<em>– 15</em> (<a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/digits10">FLT_DIG</a>) <em>or 17</em> ( <a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/max_digits10">FLT_DECIMAL_DIG</a>) <em>for np.float64,</em> <br/>&nbsp;&nbsp;&nbsp;<em>– 6 (FLT_DIG) or 9 (FLT_DECIMAL_DIG) for np.float32, etc.</em></p>
-<p>** <em>Support for np.float128 is somewhat limited: it is unix-only (=linux and mac; not available on windows). Also the names float96/float128 are highly misleading. Under the hood it is not __float128 but whichever longdouble means in the local C++ flavor. On x86_64 linux it is float80 (padded with zeros for memory alignment) which is certainly wider than float64, but comes at the cost of slower processing speed. Also you risk losing precision if you inadvertently convert it to Python float type (which is 64bit wide). For better portability it is recommended to use an alias np.longdouble instead of np.float96 / np.float128 because that’s what will be used internally anyway.</em></p>
+<p>** <em>Support for np.float128 is somewhat limited: it is unix-only (=linux and mac; not available on windows). Also the names float96/float128 are highly misleading. Under the hood it is not __float128 but whichever longdouble means in the local C++ flavor. On x86_64 Linux it is float80 (padded with zeros for memory alignment) which is certainly wider than float64, but comes at the cost of slower processing speed. Also you risk losing precision if you inadvertently convert it to Python float type (which is 64bit wide). For better portability it is recommended to use an alias np.longdouble instead of np.float96 / np.float128 because that’s what will be used internally anyway.</em></p>
 <p>Like integers, floats are also subject to overflow errors.</p>
 <p>Suppose you're calculating a sigmoid activation function of the array and one of its element happens to be</p>
 <pre class="code python literal-block">
@@ -515,10 +515,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-30T05:36:35.036359+07:00">Dec 30, 2021</time>
+            <time pubdate="pubdate" datetime="2021-12-30T10:25:39.149223+07:00">Dec 30, 2021</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-30 05:36:35.036359+07:00</div>
+            <div class="last_updated">2021-12-30 10:25:39.149223+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

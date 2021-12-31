@@ -426,7 +426,7 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 <span class="kc">False</span>
 </pre>
 <p>It works with all native NumPy types, but the necessity of this method looks somewhat non-obvious: what’s wrong with good oldisinstance? Obviously the complexity of dtypes inheritance structure (they are constructed ‘on the fly’!) didn’t allow to do it according to principle of least astonishment.</p>
-<p>If you have Pandas, you can use</p>
+<p>If you have Pandas installed, its type checking tools work with NumPy dtypes, too:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer_dtype</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 <span class="kc">True</span>
@@ -454,7 +454,9 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 <span class="kc">False</span>
 </pre>
 <p>This approach looks more hackish yet less magical than issubdtype.</p>
-<p>References</p>
+</div>
+<div class="section" id="references">
+<h2>References</h2>
 <ol class="arabic simple">
 <li>Ricky Reusser, <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">Half-Precision Floating-Point, Visualized</a></li>
 <li>Floating point guide <a class="reference external" href="https://floating-point-gui.de/">https://floating-point-gui.de/</a></li>
@@ -497,10 +499,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2021-12-31T16:47:32.483174+07:00">Dec 31, 2021</time>
+            <time pubdate="pubdate" datetime="2022-01-01T03:32:58.009115+07:00">Jan 1, 2022</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2021-12-31 16:47:32.483174+07:00</div>
+            <div class="last_updated">2022-01-01 03:32:58.009115+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

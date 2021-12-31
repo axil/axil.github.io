@@ -159,7 +159,9 @@ article p a:hover, article ol a:hover {
 .article-content blockquote {
     padding: 0px 0px 0px 20px;
     margin: 20px 0px 20px 0px;
-    border-left: 5px solid rgb(100,100,100);
+    border-left: 2px solid rgb(100,100,100);
+    font-size: 1.1em;
+    line-height: 1.4em;
 }
 
 .article-content blockquote p {
@@ -172,19 +174,20 @@ article p a:hover, article ol a:hover {
 
 .article-content ul {
     list-style-type: circle;
-    font-size:1em;
+    font-size:1.2em;
     list-style-position: inside;
 }
 
 .article-content ol {
     list-style-type: decimal;
-    font-size: 1em;
+    font-size: 1.2em;
     list-style-position: inside;
     margin-left: 0;
 }
 
 .article-content li {
     margin:1px 0px 1px 20px;
+    line-height: 1.6em;
 }
 
 .article-content dl {

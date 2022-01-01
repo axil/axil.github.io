@@ -83,7 +83,7 @@
 <p>When you feed a Python int into NumPy, it gets converted into a native NumPy type called np.int32 (or np.int64 depending on the OS, Python version and the magnitude of the initializers):</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">dtype</span>
-<span class="n">dtype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">)</span>                   <span class="c1"># int32 on windows, int64 on linux and macos</span>
+<span class="n">dtype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">)</span>                   <span class="c1"># int32 on Windows, int64 on Linux and MacOS</span>
 </pre>
 <p>If you’re unhappy with the 'flavor' of the integer type that NumPy has chosen for you, you can specify one explicitly: np.array([1,2,3], np.uint8) or np.array([1,2,3], 'uint8').</p>
 <p>NumPy works best when the width of the array elements is fixed. It is faster and takes less memory, but unlike an ordinary Python int (that works in arbitrary precision arithmetic) the value will wrap when it crosses the maximum (or minimum) value for the corresponding data type:</p>
@@ -133,7 +133,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <p>NumPy also has a bunch of C-style aliases (eg. np.byte np.int8, np.short=np.int16, np.intc=int whichever width it has in C etc), but they are getting gradually phased out (eg <a class="reference external" href="https://numpy.org/devdocs/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated">deprecation of np.long in NumPy v1.20.0</a>) as 'explicit is better than implicit' (but see a present-day usage of np.longdouble below).</p>
 <p>And yet some more exotic aliases:</p>
 <ul class="simple">
-<li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int. Specifying <cite>np.int_</cite> as a dtype is the same thing as specifying int and means &quot;do what you would do if I didn't specify any dtype at all&quot;: np.array([1,2,3]), np.array([1,2,3], <cite>np.int_</cite>) and np.array([1,2,3], int) are all the same thing.</li>
+<li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int. Specifying <cite>np.int_</cite> (or just int) as a dtype means &quot;do what you would do if I didn't specify any dtype at all&quot;: np.array([1,2]), np.array([1,2], <cite>np.int_</cite>) and np.array([1,2], int) are all the same thing.</li>
 <li><cite>np.intp</cite> is np.int32 on 32bit python but np.int64 on 64bit python, ≈ssize_t in C, used in Cython as a type for pointers.</li>
 </ul>
 <p>Occasionally it happens that some of the values in the array display anomalous behavior or missing and you want to process the array without deleting them (eg there's some valid data in other columns).</p>
@@ -232,9 +232,9 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 </pre>
 <p>Also the names float96/float128 are somewhat misleading. Under the hood it is not __float128 but whichever longdouble means in the local C++ flavor. On x86_64 Linux it is float80 (padded with zeros for memory alignment) which is certainly wider than float64, but it comes at the cost of the processing speed. Also you risk losing precision if you inadvertently convert to Python float type. For better portability it is recommended to use an alias np.longdouble instead of np.float96 / np.float128 because that's what will be used internally anyway.</p>
 <p>More insights on floats can be found in the following sources:</p>
-<p>• short and nicely illustrated <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">‘Half-Precision Floating-Point, Visualized’</a> [2] <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between normal and subnormal numbers?</p>
-<p>• more lengthy but very to-the-point, a dedicated website <a class="reference external" href="https://floating-point-gui.de/">‘Floating point guide’</a> [3]  <br/>&nbsp;&nbsp;&nbsp;— eg Why 0.1+0.2!=0.3?</p>
-<p>• long-read, a deep and thorough <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a> [4]  <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between catastrophic vs benign cancellation?</p>
+<p>&nbsp;•&nbsp;short and nicely illustrated <a class="reference external" href="https://observablehq.com/&#64;rreusser/half-precision-floating-point-visualized">‘Half-Precision Floating-Point, Visualized’</a> [2] <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between normal and subnormal numbers?</p>
+<p>&nbsp;•&nbsp;more lengthy but very to-the-point, a dedicated website <a class="reference external" href="https://floating-point-gui.de/">‘Floating point guide’</a> [3]  <br/>&nbsp;&nbsp;&nbsp;— eg Why 0.1+0.2!=0.3?</p>
+<p>&nbsp;•&nbsp;long-read, a deep and thorough <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a> [4]  <br/>&nbsp;&nbsp;&nbsp;— eg What’s the difference between catastrophic vs benign cancellation?</p>
 </div>
 <div class="section" id="bools">
 <h2>3. Bools</h2>
@@ -294,23 +294,54 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 </div>
 <div class="section" id="datetimes">
 <h2>5. Datetimes</h2>
-<p>NumPy introduces an interesting data type, similar to a POSIX timestamp (aka Unix time, the number of seconds since 1 Jan 1970) but capable of counting time with a configurable granularity—from years to attoseconds (an aspect in which other datetime libraries tend to rely on the underlying OS)—represented invariably by a single int64 number.</p>
-<p>Years granularity means ‘just count the years’ — no real improvement against storing years as an integer. Days granularity is the equivalent of Python’s datetime.date. Microseconds (or nanoseconds depending on the OS) is the equivalent of Python’s datetime.datetime. And everything below is unique to np.datetime64.</p>
-<p>When creating an array you choose if you are ok with the default microseconds or you insist on nanoseconds or what not and it’ll give you 2⁶³ equidistant moments measured in the corresponding units of time to either side of 1 Jan 1970.</p>
+<p>NumPy introduces an interesting native data type for datetimes, similar to a POSIX timestamp (aka Unix time, the number of seconds since the midnight of 1 Jan 1970) but capable of counting time with a configurable granularity - from years to attoseconds - represented invariably by a single int64 number.</p>
+<ul class="simple">
+<li>Years granularity means 'just count the years' - no real improvement against storing years as an integer.</li>
+<li>Days granularity is an equivalent of Python's datetime.date.</li>
+<li>Microseconds - of Python's datetime.datetime.</li>
+</ul>
+<p>And everything below is unique to np.datetime64.</p>
+<p>When creating an instance of np.datetime64, NumPy chooses the most coarse granularity that can still hold such data:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span>
-<span class="n">array</span><span class="p">([</span><span class="s1">'2021-12-24T18:14:00.403438'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[us]'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'today'</span><span class="p">)</span>         <span class="c1"># days granularity (in local time UTC+7)</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-25'</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>   <span class="c1"># us is too coarse for me!</span>
-<span class="n">array</span><span class="p">([</span><span class="s1">'2021-12-24T18:14:00.403438000'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'now'</span><span class="p">)</span>           <span class="c1"># seconds granularity (in UTC)</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:00'</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>     <span class="c1"># microsecond granularity</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23.404438'</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23.404438123'</span><span class="p">)</span>   <span class="c1"># nanosecond granularity</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23.404438123'</span><span class="p">)</span>
 </pre>
-<p>As in pure python, np.datetime64 is accompained by np.timedelta64 (stored as a single np.int64) with the expectable arithmetic operators.</p>
-<p>For example, to calculate the number of seconds until the New Year</p>
+<p>Note that the string initializer is not so lenient as in pd.to_datetime: it must be in this exact format or minimal variations thereof (see 'general principles' of ISO 8601 wikipedia page).
+When creating an array you decide if you are ok with the granularity that NumPy has chosen for you or you insist on, say, nanoseconds or what not and it'll give you 2⁶³ equidistant moments measured in the corresponding units of time to either side of 1 Jan 1970.</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span> <span class="s1">'datetime64[ns]'</span><span class="p">)</span>       <span class="c1"># us is too coarse for me!</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23.404438000'</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
+</pre>
+<p>It is possible to have a multiple of a base unit. For example, if you only need a precision of 0.1 sec, you don't necessarily need to store milliseconds:</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[100ms]'</span><span class="p">);</span> <span class="n">a</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'2022-12-24T18:15:08.300'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[100ms]'</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'2022-12-24T18:15:08.400'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[100ms]'</span><span class="p">)</span>
+</pre>
+<p>To get a machine-readable representation of the dtype without parsing the string:</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+<span class="n">dtype</span><span class="p">(</span><span class="s1">'&lt;M8[100ms]'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime_data</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="p">(</span><span class="s1">'ms'</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</pre>
+<p>Just like in pure Python when you subtract one np.datetime64 from another you get a np.timedelta64 object (also represented as a single int64 with a configurable granularity). For example, to get the number of seconds until the New Year,</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">());</span> <span class="n">z</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">295345588878</span><span class="p">,</span><span class="s1">'us'</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">z</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>                 <span class="c1"># getting an ordinary datetime</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">z</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>     <span class="c1"># constructing an ordinary timedelta, works with datetime64 too</span>
 <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">36353</span><span class="p">,</span> <span class="mi">424753</span><span class="p">)</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">z</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
@@ -321,29 +352,103 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="s1">'s'</span><span class="p">)</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">295259</span><span class="p">,</span><span class="s1">'s'</span><span class="p">)</span>
 </pre>
-<p>The (official!) <a class="reference external" href="https://en.wikipedia.org/wiki/Day_of_the_Programmer">Day of the Programmer</a> in Russia is celebrated on the 256th day of the year:</p>
+<p>Once constructed there's not much you can do about the datetime or timedelta objects. For the sake of speed the amount of available operations is kept at the bare minimum level: only conversions and basic arithmetic. For example, there're no 'years' or 'days' helper methods.
+To get a particular field from a datetime64/timedelta64 scalar you can convert it to a conventional datetime:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">)</span>
-<span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-09-14'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23'</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">000000</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23'</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">month</span>
+<span class="mi">12</span>
 </pre>
-<p>Leap years are supported:</p>
+<p>For the arrays</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-15 09:00'</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 09:01'</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">));</span> <span class="n">a</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'2021-12-15T09:00'</span><span class="p">,</span> <span class="s1">'2021-12-18T09:00'</span><span class="p">,</span> <span class="s1">'2021-12-21T09:00'</span><span class="p">,</span>
+       <span class="s1">'2021-12-24T09:00'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[m]'</span><span class="p">)</span>
+</pre>
+<p>you can either make conversions between np.datetime64 subtypes (faster)</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'M8[M]'</span><span class="p">)</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'M8[Y]'</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int64</span><span class="p">)</span>
+<span class="ow">or</span> <span class="n">use</span> <span class="n">Pandas</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span> <span class="n">times</span> <span class="n">slower</span><span class="p">):</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">s</span>            <span class="c1"># or pd.to_datetime(a)</span>
+<span class="n">DatetimeIndex</span><span class="p">([</span><span class="s1">'2021-12-15 09:00:00'</span><span class="p">,</span> <span class="s1">'2021-12-18 09:00:00'</span><span class="p">,</span>
+               <span class="s1">'2021-12-21 09:00:00'</span><span class="p">,</span> <span class="s1">'2021-12-24 09:00:00'</span><span class="p">],</span>
+              <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">day</span>
+<span class="n">Int64Index</span><span class="p">([</span><span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">24</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'int64'</span><span class="p">)</span>
+</pre>
+<p>Here's a useful a function that can be used to decompose a datetime64 array to an array of 7 columns (years, months, days, hours, minues, seconds, microseconds):</p>
+<pre class="code python literal-block">
+<span class="k">def</span> <span class="nf">dt2cal</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="c1"># allocate output</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">7</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;u4&quot;</span><span class="p">)</span>
+    <span class="c1"># decompose calendar floors</span>
+    <span class="n">Y</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;M8[</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="s2">&quot;YMDhms&quot;</span><span class="p">]</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">+</span> <span class="mi">1970</span> <span class="c1"># Gregorian Year</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">M</span> <span class="o">-</span> <span class="n">Y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># month</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span> <span class="o">-</span> <span class="n">M</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># dat</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">D</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;m8[h]&quot;</span><span class="p">)</span> <span class="c1"># hour</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;m8[m]&quot;</span><span class="p">)</span> <span class="c1"># minute</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;m8[s]&quot;</span><span class="p">)</span> <span class="c1"># second</span>
+    <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;m8[us]&quot;</span><span class="p">)</span> <span class="c1"># microsecond</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">dt2cal</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">2021</span><span class="p">,</span>   <span class="mi">12</span><span class="p">,</span>   <span class="mi">15</span><span class="p">,</span>    <span class="mi">9</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">2021</span><span class="p">,</span>   <span class="mi">12</span><span class="p">,</span>   <span class="mi">18</span><span class="p">,</span>    <span class="mi">9</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">2021</span><span class="p">,</span>   <span class="mi">12</span><span class="p">,</span>   <span class="mi">21</span><span class="p">,</span>    <span class="mi">9</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">],</span>
+       <span class="p">[</span><span class="mi">2021</span><span class="p">,</span>   <span class="mi">12</span><span class="p">,</span>   <span class="mi">24</span><span class="p">,</span>    <span class="mi">9</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">uint32</span><span class="p">)</span>
+</pre>
+<p>A couple of gotchas with datetimes:</p>
+<ol class="arabic simple">
+<li>Even though leap years are supported,</li>
+</ol>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'2020-03-01'</span><span class="p">,</span> <span class="s1">'2022-03-01'</span><span class="p">,</span> <span class="s1">'2024-03-01'</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span> <span class="o">-</span> \
     <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'2020-02-01'</span><span class="p">,</span> <span class="s1">'2022-02-01'</span><span class="p">,</span> <span class="s1">'2024-02-01'</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">)</span>
 <span class="n">array</span><span class="p">([</span><span class="mi">29</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">29</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'timedelta64[D]'</span><span class="p">)</span>
 </pre>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Leap_second">Leap seconds</a> are not:</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Leap_second">Leap seconds</a> (essential part of both UTC and ordinary wall time) are not:</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2017-01-01'</span><span class="p">)</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2016-12-31T23:59:00'</span><span class="p">)</span>
-<span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="s1">'s'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2016-12-31T23:59:60'</span><span class="p">)</span>
+<span class="ne">ValueError</span><span class="p">:</span> <span class="n">Seconds</span> <span class="n">out</span> <span class="n">of</span> <span class="nb">range</span> <span class="ow">in</span> <span class="n">datetime</span> <span class="n">string</span> <span class="s2">&quot;2016-12-31 12:59:60&quot;</span>
 </pre>
-<p>To be fair, neither datetime.datetime nor pytz count them, either (although in general <a class="reference external" href="https://stackoverflow.com/questions/19332902/extract-historic-leap-seconds-from-tzdata">it is possible</a> with pytz). It looks as if only astropy <a class="reference external" href="https://het.as.utexas.edu/HET/Software/Astropy-1.0/api/astropy.time.TimeGPS.html">calculates</a> them correctly, others adhere to <a class="reference external" href="https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar">proleptic Gregorian calendar</a> with its exactly 86400 SI seconds a day that has already gained about half a minute difference with solar time since 1970 (due to irregularities of the Earth rotation).</p>
-<p>As both np.datetime64 and np.timedelta64 have the same width, care must be taken with large timedeltas:</p>
+<p>To be fair, neither datetime.datetime nor pytz count them, either (although in general <a class="reference external" href="https://stackoverflow.com/questions/19332902/extract-historic-leap-seconds-from-tzdata">it is possible</a> to extract info about leap seconds from pytz). time module supports them only formally (accepts 60th second, but incorrect intervals).</p>
+<p>It looks as if only <a class="reference external" href="https://www.astropy.org/">astropy</a> processes them correctly so far,</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">(</span><span class="n">Time</span><span class="p">(</span><span class="s1">'2017-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">Time</span><span class="p">(</span><span class="s1">'2016-12-31 23:59'</span><span class="p">))</span><span class="o">.</span><span class="n">sec</span>
+<span class="mf">61.00000000001593</span>
+</pre>
+<p>others adhere to <a class="reference external" href="https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar">proleptic Gregorian calendar</a> with its exactly 86400 SI seconds a day that has already gained about half a minute difference with the walltime since 1970 due to irregularities of the Earth rotation.
+The practical implications of using this calendar are:
+– mistake when calculating intervals that include one or more leap seconds
+– exception when trying to construct a datetime64 from a timestamp taken during a leap second</p>
+<ol class="arabic simple" start="2">
+<li>As both np.datetime64 and np.timedelta64 have the same width, care must be taken with large timedeltas:</li>
+</ol>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2262-01-01'</span><span class="p">,</span> <span class="s1">'ns'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'1678-01-01'</span><span class="p">,</span> <span class="s1">'ns'</span><span class="p">)</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="o">-</span><span class="mi">17537673709551616</span><span class="p">,</span><span class="s1">'ns'</span><span class="p">)</span>
 </pre>
-<p>Also note that all the times in np.datetime64 are 'naive': they are not aware of daylight saving and are not capable of being converted from one timezone to another. So it is not a replacement for datetime + <a class="reference external" href="http://pytz.sourceforge.net/">pytz</a> , rather a complement to it.</p>
+<p>Finally, note that all the times in np.datetime64 are 'naive': they are not 'aware' of daylight saving (=&gt;it is recommended to store all datetimes in UTC) and are not capable of being converted from one timezone to another (=&gt;use pytz for timezone conversions):</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01 12:00'</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-03 12:00'</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime_as_string</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'2022-01-01T12:00'</span><span class="p">,</span> <span class="s1">'2022-01-02T12:00'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U35'</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime_as_string</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s1">'local'</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'2022-01-01T19:00+0700'</span><span class="p">,</span> <span class="s1">'2022-01-02T19:00+0700'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U39'</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime_as_string</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="s1">'US/Eastern'</span><span class="p">))</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'2022-01-01T07:00-0500'</span><span class="p">,</span> <span class="s1">'2022-01-02T07:00-0500'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'&lt;U39'</span><span class="p">)</span>
+</pre>
 </div>
 <div class="section" id="combinations-thereof">
 <h2>6. Combinations thereof</h2>
@@ -499,10 +604,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2022-01-01T03:32:58.009115+07:00">Jan 1, 2022</time>
+            <time pubdate="pubdate" datetime="2022-01-02T05:21:52.675643+07:00">Jan 2, 2022</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2022-01-01 03:32:58.009115+07:00</div>
+            <div class="last_updated">2022-01-02 05:21:52.675643+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

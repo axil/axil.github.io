@@ -76,15 +76,13 @@
 <p>NumPy, one of the most popular Python libraries for both data science and scientific computing, is pretty omnivorous when it comes to data types: it can handle just everything.</p>
 <p>It has its own set of ‘native’ types which it is capable of processing at full speed but it can also work with pretty much anything known to Python.</p>
 <p>The article consists of 7 parts:</p>
-<ol class="arabic simple">
-<li>Integers</li>
-<li>Floats (including Fractions and Decimals)</li>
-<li>Bools</li>
-<li>Strings</li>
-<li>Datetimes</li>
-<li>Combinations thereof</li>
-<li>Type Checks</li>
-</ol>
+<p><a class="reference internal" href="#integers">1. Integers</a> <br/>
+<a class="reference internal" href="#floats">2. Floats</a> (including Fractions and Decimals) <br/>
+<a class="reference internal" href="#bools">3. Bools</a> <br/>
+<a class="reference internal" href="#strings">4. Strings</a>  <br/>
+<a class="reference internal" href="#datetimes">5. Datetimes</a> <br/>
+<a class="reference internal" href="#combinations-thereof">6. Combinations thereof</a> <br/>
+<a class="reference internal" href="#type-checks">7. Type Checks</a></p>
 <div class="section" id="integers">
 <h2>1. Integers</h2>
 <p>The integer types table in NumPy is absolutely trivial for anyone with minimal experience in C/C++:</p>
@@ -305,6 +303,10 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 <div class="section" id="datetimes">
 <h2>5. Datetimes</h2>
 <p>NumPy introduces an interesting native data type for datetimes, similar to a POSIX timestamp (aka Unix time, the number of seconds since the midnight of 1 Jan 1970) but capable of counting time with a configurable granularity - from years to attoseconds - represented invariably by a single int64 number.</p>
+<div class="figure">
+<img alt="Datetime64 granularities table" src="img/numpy-data-types/granularities.png" />
+<p class="caption">Table from the official <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.datetime.html">docs</a></p>
+</div>
 <ul class="simple">
 <li>Years granularity means 'just count the years' - no real improvement against storing years as an integer.</li>
 <li>Days granularity is an equivalent of Python's datetime.date.</li>
@@ -362,7 +364,7 @@ When creating an array you decide if you are ok with the granularity that NumPy 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="s1">'s'</span><span class="p">)</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">295259</span><span class="p">,</span><span class="s1">'s'</span><span class="p">)</span>
 </pre>
-<p>Once constructed there's not much you can do about the datetime or timedelta objects. For the sake of speed the amount of available operations is kept at the bare minimum level: only conversions and basic arithmetic. For example, there're no 'years' or 'days' helper methods.
+<p>Once constructed there's not much you can do about the datetime or timedelta objects. For the sake of speed the amount of available operations is kept to the bare minimum: only conversions and basic arithmetic. For example, there're no 'years' or 'days' helper methods.
 To get a particular field from a datetime64/timedelta64 scalar you can convert it to a conventional datetime:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23'</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
@@ -624,10 +626,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2022-01-02T05:21:52.675643+07:00">Jan 2, 2022</time>
+            <time pubdate="pubdate" datetime="2022-01-02T12:27:54.488615+07:00">Jan 2, 2022</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2022-01-02 05:21:52.675643+07:00</div>
+            <div class="last_updated">2022-01-02 12:27:54.488615+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

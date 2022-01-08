@@ -374,23 +374,24 @@ To get a particular field from a datetime64/timedelta64 scalar you can convert i
 </pre>
 <p>For the arrays</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-15 09:00'</span><span class="p">),</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 09:01'</span><span class="p">),</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">));</span> <span class="n">a</span>
-<span class="n">array</span><span class="p">([</span><span class="s1">'2021-12-15T09:00'</span><span class="p">,</span> <span class="s1">'2021-12-18T09:00'</span><span class="p">,</span> <span class="s1">'2021-12-21T09:00'</span><span class="p">,</span>
-       <span class="s1">'2021-12-24T09:00'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[m]'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-01-20'</span><span class="p">),</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-20'</span><span class="p">),</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">));</span> <span class="n">a</span>
+<span class="n">array</span><span class="p">([</span><span class="s1">'2021-01-20'</span><span class="p">,</span> <span class="s1">'2021-04-20'</span><span class="p">,</span> <span class="s1">'2021-07-19'</span><span class="p">,</span> <span class="s1">'2021-10-17'</span><span class="p">],</span>
+      <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[D]'</span><span class="p">)</span>
 </pre>
 <p>you can either make conversions between np.datetime64 subtypes (faster)</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'M8[M]'</span><span class="p">)</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'M8[Y]'</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
-<span class="n">array</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int64</span><span class="p">)</span>
-<span class="ow">or</span> <span class="n">use</span> <span class="n">Pandas</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span> <span class="n">times</span> <span class="n">slower</span><span class="p">):</span>
+<span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int64</span><span class="p">)</span>
+</pre>
+<p>or use Pandas (2-4 times slower):</p>
+<pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">s</span>            <span class="c1"># or pd.to_datetime(a)</span>
-<span class="n">DatetimeIndex</span><span class="p">([</span><span class="s1">'2021-12-15 09:00:00'</span><span class="p">,</span> <span class="s1">'2021-12-18 09:00:00'</span><span class="p">,</span>
-               <span class="s1">'2021-12-21 09:00:00'</span><span class="p">,</span> <span class="s1">'2021-12-24 09:00:00'</span><span class="p">],</span>
+<span class="n">DatetimeIndex</span><span class="p">([</span><span class="s1">'2021-01-20'</span><span class="p">,</span> <span class="s1">'2021-04-20'</span><span class="p">,</span> <span class="s1">'2021-07-19'</span><span class="p">,</span> <span class="s1">'2021-10-17'</span><span class="p">],</span>
               <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">day</span>
-<span class="n">Int64Index</span><span class="p">([</span><span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">24</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'int64'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">month</span>
+<span class="n">Int64Index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'int64'</span><span class="p">)</span>
 </pre>
 <p>Here's a useful a function that can be used to decompose a datetime64 array to an array of 7 columns (years, months, days, hours, minues, seconds, microseconds):</p>
 <pre class="code python literal-block">
@@ -627,10 +628,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2022-01-09T01:33:08.207089+07:00">Jan 9, 2022</time>
+            <time pubdate="pubdate" datetime="2022-01-09T01:47:38.006614+07:00">Jan 9, 2022</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2022-01-09 01:33:08.207089+07:00</div>
+            <div class="last_updated">2022-01-09 01:47:38.006614+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

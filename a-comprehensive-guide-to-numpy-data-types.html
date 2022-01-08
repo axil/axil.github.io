@@ -464,7 +464,7 @@ The practical implications of using this calendar are:
 </div>
 <div class="section" id="combinations-thereof">
 <h2>6. Combinations thereof</h2>
-<p>A structured array is an array with a custom dtype made from the types described above as the basic building blocks (akin to enum in C). Typical example is an RGB pixel color: a 4 bytes long type, in which the colors can be accessed by name:</p>
+<p>A 'structured array' in NumPy is an array with a custom dtype made from the types described above as the basic building blocks (akin to struct in C). Typical example is an RGB pixel color: a 3 bytes long type (usually 4 for alignment), in which the colors can be accessed by name:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span> <span class="n">a</span>
@@ -565,11 +565,12 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 </pre>
 <p>And the usage is like</p>
 <pre class="code python literal-block">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">'AllInteger'</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">'AllInteger'</span><span class="p">]</span>
 <span class="kc">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">'Datetime'</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">'Datetime'</span><span class="p">]</span>
 <span class="kc">False</span>
 </pre>
+<p>The downside here is that bools, strings, bytes, objects, voids ('?', 'U', 'S', 'O', 'V' accordingly) don't have dedicated keys in the np.typecodes dict.</p>
 <p>This approach looks more hackish yet less magical than issubdtype.</p>
 </div>
 <div class="section" id="references">
@@ -626,10 +627,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2022-01-03T12:28:52.794579+07:00">Jan 3, 2022</time>
+            <time pubdate="pubdate" datetime="2022-01-09T01:23:30.733860+07:00">Jan 9, 2022</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2022-01-03 12:28:52.794579+07:00</div>
+            <div class="last_updated">2022-01-09 01:23:30.733860+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

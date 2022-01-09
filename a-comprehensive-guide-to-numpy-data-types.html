@@ -87,7 +87,7 @@
 <h2>1. Integers</h2>
 <p>The integer types table in NumPy is absolutely trivial for anyone with minimal experience in C/C++:</p>
 <img alt="NumPy Integer Types" src="img/numpy-data-types/integers.png" />
-<p>Just like in C/C++, <cite>u</cite> stands for 'unsigned' and the number is the amount of bits used to store the variable in memory (eg int64 is a 8-bytes-wide signed integer).</p>
+<p>Just like in C/C++, <cite>u</cite> stands for 'unsigned' and the digits represent the number of bits used to store the variable in memory (eg int64 is a 8-bytes-wide signed integer).</p>
 <p>When you feed a Python int into NumPy, it gets converted into a native NumPy type called np.int32 (or np.int64 depending on the OS, Python version and the magnitude of the initializers):</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">dtype</span>
@@ -111,7 +111,7 @@
 <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">9223372036854775808</span><span class="p">])</span>
 </pre>
 <p>— not even a warning here!</p>
-<p>With scalars it is a different story: first NumPy tries it best to promote the value to a wider type, then, if there is none, fires the overflow warning (to avoid flooding the output with warnings—only once):</p>
+<p>With scalars, it is a different story: first NumPy tries it best to promote the value to a wider type, then, if there is none, fires the overflow warning (to avoid flooding the output with warnings—only once):</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>   <span class="c1"># ok, promoted to int32(win)/int64(linux)</span>
 <span class="mi">256</span>
@@ -144,7 +144,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <li><cite>np.int_</cite> is np.int32 on 64bit windows but int64 on 64bit linux, used to designate the 'default' int. Specifying <cite>np.int_</cite> (or just int) as a dtype means &quot;do what you would do if I didn't specify any dtype at all&quot;: np.array([1,2]), np.array([1,2], <cite>np.int_</cite>) and np.array([1,2], int) are all the same thing.</li>
 <li><cite>np.intp</cite> is np.int32 on 32bit python but np.int64 on 64bit python, ≈ssize_t in C, used in Cython as a type for pointers.</li>
 </ul>
-<p>Occasionally it happens that some of the values in the array display anomalous behavior or missing and you want to process the array without deleting them (eg there's some valid data in other columns).</p>
+<p>Occasionally it happens that some values in the array display anomalous behavior or missing, and you want to process the array without deleting them (eg there's some valid data in other columns).</p>
 <p>You can't put None there because it doesn't fit in the consecutive np.int64 values and also because 1+None is an unsupported operation.</p>
 <p>Pandas has a separate data type for that, but NumPy's way of dealing with the missed values is through the so-called masked array: you mark the invalid values with a boolean mask and then all the operations are carried out as if the values are not there.</p>
 <pre class="code python literal-block">
@@ -198,7 +198,7 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 <span class="mi">16</span>
 </pre>
 <p>Also exactly representable are fractions like 0.5, 0.125, 0.875 where the denominator is a power of 2 (0.5=1/2, 0.125=1/8, 0.875 =7/8, etc).</p>
-<p>Any other denominator will result in a rounding error so that 0.1+0.2!=0.3. The standard approach of dealing with this problem is to compare them with a relative tolerance (to compare two non-zero arguments) and absolute tolerance (if one of the arguments is zero). For scalars it is handled by <cite>math.isclose(a, b, *, rel_tol=1e-09, abs_tol=0.0)</cite>, for NumPy arrays there’s a vectorized version <cite>np.isclose(a, b, rtol=1e-05, atol=1e-08)</cite>. Note that the tolerance arguments have different names and defaults.</p>
+<p>Any other denominator will result in a rounding error so that 0.1+0.2!=0.3. The standard approach of dealing with this problem is to compare them with a relative tolerance (to compare two non-zero arguments) and absolute tolerance (if one of the arguments is zero). For scalars, it is handled by <cite>math.isclose(a, b, *, rel_tol=1e-09, abs_tol=0.0)</cite>, for NumPy arrays there’s a vectorized version <cite>np.isclose(a, b, rtol=1e-05, atol=1e-08)</cite>. Note that the tolerance arguments have different names and defaults.</p>
 <p>For the financial data decimal.Decimal type is handy as it involves no tolerances at all:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="n">Decimal</span> <span class="k">as</span> <span class="n">D</span>
@@ -220,7 +220,7 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 </pre>
 <p>It can represent any rational number, but pi and exp are out of luck )</p>
 <p>Both Decimal and Fraction are not native types for NumPy but it is capable of working with them with all the niceties like multi-dimensions and fancy indexing, albeit at the cost of slower processing speed than that of native ints or floats.</p>
-<p>Complex numbers are treated the same way as floats. There're a couple of convenience functions with intuitive names like np.real(z), np.imag(z), np.abs(z), np.angle(z) that work on both scalars and arrays as a whole. The only difference from pure Python <cite>complex</cite> is that <cite>np.complex_</cite> does not work with integers:</p>
+<p>Complex numbers are treated the same way as floats. There are a couple of convenience functions with intuitive names like np.real(z), np.imag(z), np.abs(z), np.angle(z) that work on both scalars and arrays as a whole. The only difference from pure Python <cite>complex</cite> is that <cite>np.complex_</cite> does not work with integers:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="n">j</span><span class="p">])</span>                  <span class="c1"># .dtype == np.complex128</span>
 <span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="o">+</span><span class="mf">2.</span><span class="n">j</span><span class="p">])</span>
@@ -285,7 +285,7 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 <p>This time the first array takes 124 bytes, the second one is the same 128 bytes for the array itself + 106 bytes for the three python <cite>bytes</cite>:</p>
 <img alt="NumPy Bytes_ Type" src="img/numpy-data-types/bytes.png" />
 <p>We see that <cite>str_</cite> is smaller again, yet for more diverse lengths str can take the win.</p>
-<p>As for the native <cite>np.str_</cite> and <cite>np.bytes_</cite> types, NumPy has a handful of common string operations mirroring str methods living in the np.char module that operate over the whole array:</p>
+<p>As for the native <cite>np.str_</cite> and <cite>np.bytes_</cite> types, NumPy has a handful of common string operations. They mirror Python's str methods, live in the np.char module and operate over the whole array:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="s1">'a'</span><span class="p">,</span><span class="s1">'b'</span><span class="p">],[</span><span class="s1">'c'</span><span class="p">,</span><span class="s1">'d'</span><span class="p">]]))</span>
 <span class="n">array</span><span class="p">([[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">],</span>
@@ -327,8 +327,8 @@ Such warnings can be 'upgraded' to exceptions or silenced via the errstate or fi
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23.404438123'</span><span class="p">)</span>   <span class="c1"># nanosecond granularity</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23.404438123'</span><span class="p">)</span>
 </pre>
-<p>Note that the string initializer is not so lenient as in pd.to_datetime: it must be in this exact format or minimal variations thereof (see 'general principles' of ISO 8601 wikipedia page).
-When creating an array you decide if you are ok with the granularity that NumPy has chosen for you or you insist on, say, nanoseconds or what not and it'll give you 2⁶³ equidistant moments measured in the corresponding units of time to either side of 1 Jan 1970.</p>
+<p>Note that the string initializer is not so lenient as in pd.to_datetime: it must be in this exact format or minimal variations thereof (see 'general principles' of ISO 8601 Wikipedia page).
+When creating an array you decide if you are ok with the granularity that NumPy has chosen for you or you insist on, say, nanoseconds or what not, and it'll give you 2⁶³ equidistant moments measured in the corresponding units of time to either side of 1 Jan 1970.</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span> <span class="s1">'datetime64[ns]'</span><span class="p">)</span>       <span class="c1"># us is too coarse for me!</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23.404438000'</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'datetime64[ns]'</span><span class="p">)</span>
@@ -364,7 +364,7 @@ When creating an array you decide if you are ok with the granularity that NumPy 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2022-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="s1">'s'</span><span class="p">)</span>
 <span class="n">numpy</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">295259</span><span class="p">,</span><span class="s1">'s'</span><span class="p">)</span>
 </pre>
-<p>Once constructed there's not much you can do about the datetime or timedelta objects. For the sake of speed the amount of available operations is kept to the bare minimum: only conversions and basic arithmetic. For example, there're no 'years' or 'days' helper methods.
+<p>Once constructed there's not much you can do about the datetime or timedelta objects. For the sake of speed, the amount of available operations is kept to the bare minimum: only conversions and basic arithmetic. For example, there are no 'years' or 'days' helper methods.
 To get a particular field from a datetime64/timedelta64 scalar you can convert it to a conventional datetime:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">'2021-12-24 18:14:23'</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
@@ -393,7 +393,7 @@ To get a particular field from a datetime64/timedelta64 scalar you can convert i
 <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">month</span>
 <span class="n">Int64Index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'int64'</span><span class="p">)</span>
 </pre>
-<p>Here's a useful <a class="reference external" href="https://stackoverflow.com/questions/13648774/get-year-month-or-day-from-numpy-datetime64/56260054#56260054">function</a> that decomposes a datetime64 array into an array of 7 integer columns (years, months, days, hours, minues, seconds, microseconds):</p>
+<p>Here's a useful <a class="reference external" href="https://stackoverflow.com/questions/13648774/get-year-month-or-day-from-numpy-datetime64/56260054#56260054">function</a> that decomposes a datetime64 array into an array of 7 integer columns (years, months, days, hours, minutes, seconds, microseconds):</p>
 <pre class="code python literal-block">
 <span class="k">def</span> <span class="nf">dt2cal</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
     <span class="c1"># allocate output</span>
@@ -436,7 +436,7 @@ To get a particular field from a datetime64/timedelta64 scalar you can convert i
 <span class="o">&gt;&gt;&gt;</span> <span class="p">(</span><span class="n">Time</span><span class="p">(</span><span class="s1">'2017-01-01'</span><span class="p">)</span> <span class="o">-</span> <span class="n">Time</span><span class="p">(</span><span class="s1">'2016-12-31 23:59'</span><span class="p">))</span><span class="o">.</span><span class="n">sec</span>
 <span class="mf">61.00000000001593</span>
 </pre>
-<p>others adhere to <a class="reference external" href="https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar">proleptic Gregorian calendar</a> with its exactly 86400 SI seconds a day that has already gained about half a minute difference with the walltime since 1970 due to irregularities of the Earth rotation.
+<p>others adhere to the <a class="reference external" href="https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar">proleptic Gregorian calendar</a> with its exactly 86400 SI seconds a day that has already gained about half a minute difference with the wall time since 1970 due to irregularities of the Earth rotation.
 The practical implications of using this calendar are:
 – mistake when calculating intervals that include one or more leap seconds
 – exception when trying to construct a datetime64 from a timestamp taken during a leap second</p>
@@ -465,7 +465,7 @@ The practical implications of using this calendar are:
 </div>
 <div class="section" id="combinations-thereof">
 <h2>6. Combinations thereof</h2>
-<p>A 'structured array' in NumPy is an array with a custom dtype made from the types described above as the basic building blocks (akin to struct in C). Typical example is an RGB pixel color: a 3 bytes long type (usually 4 for alignment), in which the colors can be accessed by name:</p>
+<p>A 'structured array' in NumPy is an array with a custom dtype made from the types described above as the basic building blocks (akin to struct in C). A typical example is an RGB pixel color: a 3 bytes long type (usually 4 for alignment), in which the colors can be accessed by name:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span> <span class="n">a</span>
@@ -501,9 +501,9 @@ The practical implications of using this calendar are:
 include subarrays.</p>
 <p>With structured arrays and recarrays can get the 'look and feel' of a basic Pandas DataFrame:&nbsp;<br/>&nbsp;&nbsp;&nbsp;– you can address columns by names,&nbsp;<br/>&nbsp;&nbsp;&nbsp;– do some arithmetic and statistic calculations with them,&nbsp;<br/>&nbsp;&nbsp;&nbsp;– some operations are faster in NumPy than in Pandas <br/>
 but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by itertools.groupby)&nbsp;<br/>&nbsp;&nbsp;&nbsp;– the mighty Pandas Index and MultiIndex (so no pivot tables) and <br/>&nbsp;&nbsp;&nbsp;– other niceties like convenient sorting, etc.</p>
-<p>The gotcha here is that even though this syntax is convenient for addressing particular columns as a whole, neither structured arrays nor recarrays are something you'd want to do in the innermost loop of a compute-intensive code:</p>
+<p>The gotcha here is that even though this syntax is convenient for addressing particular columns as a whole, neither structured arrays nor recarrays are something you'd want to use in the innermost loop of a compute-intensive code:</p>
 <pre class="code python literal-block">
-<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
 <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
 
@@ -537,7 +537,7 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>    <span class="c1"># might be np.int64 on a different OS</span>
 <span class="kc">True</span>
 </pre>
-<p>All the NumPy types are interconnected in an inheritance tree displayed in the top of the article (blue=abstract classes, green=numeric types, yellow=others) so instead of specifying a whole list of types like isinstance(v, [np.int32, np.int64, etc]) you can write more compact typechecks like</p>
+<p>All the NumPy types are interconnected in an inheritance tree displayed at the top of the article (blue=abstract classes, green=numeric types, yellow=others) so instead of specifying a whole list of types like isinstance(v, [np.int32, np.int64, etc]) you can write more compact typechecks like</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>        <span class="c1"># true for all integers</span>
 <span class="kc">True</span>
@@ -597,7 +597,7 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s1">'Datetime'</span><span class="p">]</span>
 <span class="kc">False</span>
 </pre>
-<p>The downside here is that bools, strings, bytes, objects and voids ('?', 'U', 'S', 'O' and 'V' accordingly) don't have dedicated keys in the dict.</p>
+<p>The downside here is that bools, strings, bytes, objects, and voids ('?', 'U', 'S', 'O', and 'V' accordingly) don't have dedicated keys in the dict.</p>
 <p>This approach looks more hackish yet less magical than issubdtype.</p>
 </div>
 <div class="section" id="references">
@@ -654,10 +654,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2022-01-09T22:32:57.101039+07:00">Jan 9, 2022</time>
+            <time pubdate="pubdate" datetime="2022-01-10T00:59:40.250880+07:00">Jan 10, 2022</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2022-01-09 22:32:57.101039+07:00</div>
+            <div class="last_updated">2022-01-10 00:59:40.250880+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 

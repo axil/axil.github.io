@@ -65,7 +65,7 @@
             <img alt="NumPy Types Diagram" src="img/numpy-data-types/numpy_types_diagram.png" />
 <p>NumPy, one of the most popular Python libraries for both data science and scientific computing, is pretty omnivorous when it comes to data types: it can handle just everything.</p>
 <p>It has its own set of ‘native’ types which it is capable of processing at full speed, but it can also work with pretty much anything known to Python.</p>
-<p>The article consists of seven parts:</p>
+<p>The article is written as a supplement to my [NumPy Illustrated](<a class="reference external" href="https://betterprogramming.pub/numpy-illustrated-the-visual-guide-to-numpy-3b1d4976de1d?sk=57b908a77aa44075a49293fa1631dd9b">https://betterprogramming.pub/numpy-illustrated-the-visual-guide-to-numpy-3b1d4976de1d?sk=57b908a77aa44075a49293fa1631dd9b</a>) guide and is divided into seven parts:</p>
 <p><a class="reference internal" href="#integers">1. Integers</a> <br/>
 <a class="reference internal" href="#floats">2. Floats</a> (including Fractions and Decimals) <br/>
 <a class="reference internal" href="#bools">3. Bools</a> <br/>
@@ -156,7 +156,7 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <h2>2. Floats</h2>
 <p>As Python did not diverge from the IEEE 754-standardized C double type, the floating type transition from Python to NumPy is pretty much hassle-free:</p>
 <img alt="NumPy Floating Types" src="img/numpy-data-types/floats.png" />
-<p>* As reported by np.finfo(np.float&lt;nn&gt;).precision. Depending on what you mean it may be:  15* (<a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/digits10">15</a>) <em>or</em> ( <a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/max_digits10">17 FLT_DECIMAL_DIG</a>) for np.float64, 6 or 9 for np.float32, etc.</p>
+<p>* As reported by np.finfo(np.float&lt;nn&gt;).precision. Two alternative definitions give <a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/digits10">15</a> and <a class="reference external" href="https://en.cppreference.com/w/cpp/types/numeric_limits/max_digits10">17</a> for np.float64, 6 and 9 for np.float32, etc.</p>
 <p>** As of today, np.float128 is Unix-only (not available on Windows).</p>
 <p>Like integers, floats are also subject to overflow errors.</p>
 <p>Suppose you're calculating a sigmoid activation function of the array and one of its element happens to be</p>
@@ -169,8 +169,9 @@ Unlike true floating point errors (where the hardware FPU sets a flag whenever i
 <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">overflow</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">exp</span>
 <span class="n">array</span><span class="p">([</span><span class="n">inf</span><span class="p">])</span>
 </pre>
-<p>What this warning is trying to tell you is that NumPy is aware that mathematically speaking 1/(1+exp(-x)) should never be 0., but in this particular case due an overflow it is.
-Such warnings can be 'upgraded' to exceptions or silenced via the errstate or filterwarnings as described in the 'integers' section above - and maybe for this particular case that would be enough - but if you really want to get the exact value you can select a wider dtype:</p>
+<p>What this warning is trying to tell you is that NumPy is aware that mathematically speaking 1/(1+exp(-x)) can never be zero, but in this particular case due an overflow it is.</p>
+<img alt="Overflows and underflows" src="img/numpy-data-types/overflows.png" />
+<p>Such warnings can be 'promoted' to exceptions or silenced via the errstate or filterwarnings as described in the 'integers' section above - and maybe for this particular case that would be enough - but if you really want to get the exact value you can select a wider dtype:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">1234.5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float128</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
@@ -455,12 +456,83 @@ The practical implications of using this calendar are:
 </div>
 <div class="section" id="combinations-thereof">
 <h2>6. Combinations thereof</h2>
-<p>A 'structured array' in NumPy is an array with a custom dtype made from the types described above as the basic building blocks (akin to struct in C). A typical example is an RGB pixel color: a 3 bytes long type (usually 4 for alignment), in which the colors can be accessed by name:</p>
+<p>A 'structured array' in NumPy is a 'two in one' feature:
+1) It allows to give names to columns
+2) It allows columns to have different data types</p>
+<p>If all you need is (1), then you're good to go with just two functions: u2s converts an ordinary ('unstructured') array to structured and s2u converts it back. You have better readability, can use the 'order' argument to 'sort', but be aware that access by name can slow down when done during the iteration in a python loop (operations vectorized on the C level are not affected).</p>
+<p>By default the columns are named 'f0', 'f1', etc:</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">]]);</span> <span class="n">a</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">u2s</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">b</span>
+<span class="n">array</span><span class="p">([(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'f0'</span><span class="p">,</span> <span class="s1">'&lt;i4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'f1'</span><span class="p">,</span> <span class="s1">'&lt;i4'</span><span class="p">)])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s1">'f1'</span><span class="p">,</span> <span class="s1">'f0'</span><span class="p">]);</span> <span class="n">b</span>
+<span class="n">array</span><span class="p">([(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'&lt;i4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'&lt;i4'</span><span class="p">)])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s2u</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">]])</span>
+</pre>
+<p>It is ok for 'sort', but if you want to do anything else, you might want to give more readable names to the columns:</p>
+<blockquote>
+<pre class="doctest-block">
+&gt;&gt;&gt; b = u2s(a, names=['x', 'y']); b
+array([(2, 4), (3, 4), (1, 5), (2, 7)], dtype=[('x', '&lt;i4'), ('y', '&lt;i4')])
+&gt;&gt;&gt; b['x']
+array([2, 3, 1, 2])
+&gt;&gt;&gt; b['x'] + b['y']
+array([6, 7, 6, 9])
+</pre>
+</blockquote>
+<p>The (2) part is more powerful (and a bit more complicated). Not only can every column have a custom name, but a custom data type, too (akin to struct in C).  Any dtype from the previous sections would do (including the object type).</p>
+<p>The most straightforward way of building a structured array is to read the data from the csv file and to let NumPy autodetect the dtypes:</p>
+<blockquote>
+a.csv:
+name, age, height, is_married
+John, 21, 1.77, True
+Mary, 20, 1.63, False</blockquote>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="s1">'a.csv'</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">', '</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([(</span><span class="s1">'John'</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">1.77</span><span class="p">,</span>  <span class="kc">True</span><span class="p">),</span>
+       <span class="p">(</span><span class="s1">'Mary'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">1.63</span><span class="p">,</span> <span class="kc">False</span><span class="p">)],</span>
+      <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'&lt;U4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'age'</span><span class="p">,</span> <span class="s1">'&lt;i4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'height'</span><span class="p">,</span> <span class="s1">'&lt;f8'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'is_married'</span><span class="p">,</span> <span class="s1">'?'</span><span class="p">)])</span>
+</pre>
+<p>Without dtype=None NumPy will create an ordinary (unstructured) array, parsing all fields as floats and using nans where the conversion fails.</p>
+<p>The encoding is a backwards-compatibility artefact. Without it, you'll get bytes instead of strs (and a deprecation warning).</p>
+<p>The delimiter must be provided unless the fields are separated by anything other than spaces.</p>
+<p>The names of the columns will be automatically filled in from the first line of the csv file. If your csv file doesn't have a header, simply skip 'names=True' argument. If you need to fine-tune a particular name, they are accessible through a.dtype.names. You can also override the names by passing the corresponding list to the 'names' argument to genfromtxt, but it is less convenient because you'll also have to specify skip_header=1.</p>
+<p>The cryptic symbols in the dtype are short way to say <cite>np.str_</cite> of length 3, np.int32, np.float64, and <cite>np.bool_</cite>, respectively.</p>
+<p>If you already have a python array and want to convert it to a structured array,</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">([(</span><span class="s1">'John'</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">1.77</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+               <span class="p">(</span><span class="s1">'Mary'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">1.63</span><span class="p">,</span> <span class="kc">False</span><span class="p">)])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">fromarrays</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">))</span>
+<span class="n">rec</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="s1">'John'</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">1.77</span><span class="p">,</span>  <span class="kc">True</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Mary'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">1.63</span><span class="p">,</span> <span class="kc">False</span><span class="p">)],</span>
+  <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'f0'</span><span class="p">,</span> <span class="s1">'&lt;U4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'f1'</span><span class="p">,</span> <span class="s1">'&lt;i4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'f2'</span><span class="p">,</span> <span class="s1">'&lt;f8'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'f3'</span><span class="p">,</span> <span class="s1">'?'</span><span class="p">)])</span>
+</pre>
+<p>The necessity of transposing the list manually with <cite>zip(*a)</cite> unnecessarily complicates things (I'd prefer it to be done with a dedicated argument to fromarrays or via a separate constructor). What they were trying to acheive here was the ability to build a structured array from a stack of ordinary arrays:</p>
+<p>If you want to fine-tyne the dtypes, you can use the default constructor</p>
+<p>Another way to build the structured array is to feed a list of tuples to the constructor directly. This way, you'll have to be explicit about the dtypes, but the abbreviations is not a must, you can use ordinary class names:</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="p">([(</span><span class="s1">'John'</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">1.77</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+               <span class="p">(</span><span class="s1">'Mary'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">1.63</span><span class="p">,</span> <span class="kc">False</span><span class="p">)],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'U4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'age'</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">'height'</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">'is_married'</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)])</span>
+</pre>
+<p>It might be awkward to list the types manually, but allows you to be specific about the particular types (eg you want to build float column from integer values, or set a wider width of string if you know they are likely to grow in future).</p>
+<pre class="code python literal-block">
+<span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">fromarrays</span><span class="p">([</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'John'</span><span class="p">,</span> <span class="s1">'Mary'</span><span class="p">]),</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">21</span><span class="p">,</span> <span class="mi">20</span><span class="p">]),</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.77</span><span class="p">,</span> <span class="mf">1.63</span><span class="p">]),</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])])</span>
+<span class="n">rec</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="s1">'John'</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">1.77</span><span class="p">,</span>  <span class="kc">True</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Mary'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">1.63</span><span class="p">,</span> <span class="kc">False</span><span class="p">)],</span>
+  <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'f0'</span><span class="p">,</span> <span class="s1">'&lt;U4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'f1'</span><span class="p">,</span> <span class="s1">'&lt;i4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'f2'</span><span class="p">,</span> <span class="s1">'&lt;f8'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'f3'</span><span class="p">,</span> <span class="s1">'?'</span><span class="p">)])</span>
+</pre>
+<p>A typical example is an RGB pixel color: a 3 bytes long type (usually 4 for alignment), in which the colors can be accessed by name:</p>
 <pre class="code python literal-block">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span> <span class="n">a</span>
 <span class="n">array</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
       <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="s1">'u1'</span><span class="p">)])</span>
+
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'x'</span><span class="p">]</span>
@@ -588,7 +660,7 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 <span class="kc">False</span>
 </pre>
 <p><em>Note that using a.dtype.kind instead of a.dtype.char is a mistake: np.zeros(1, dtype=np.uint8).dtype.kind == 'u' is missing from np.typecodes while  &lt;…&gt;.char == 'B' is listed there.</em></p>
-<p>One downside of this method is that bools, strings, bytes, objects, and voids ('?', 'U', 'S', 'O', and 'V' accordingly) don't have dedicated keys in the dict.</p>
+<p>One downside of this method is that bools, strings, bytes, objects, and voids ('?', 'U', 'S', 'O', and 'V', respectively) don't have dedicated keys in the dict.</p>
 <p>This approach looks more hackish yet less magical than issubdtype.</p>
 </div>
 <div class="section" id="references">
@@ -599,6 +671,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
 <li>David Goldberg, <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What Every Computer Scientist Should Know About Floating-Point Arithmetic, Appendix D</a></li>
 <li>NumPy issue <a class="reference external" href="https://github.com/numpy/numpy/issues/17325">#17325</a>, Add a canonical way to determine if dtype is integer, floating point or complex</li>
 </ol>
+</div>
+<div class="section" id="license">
+<h2>License</h2>
+<p><a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">CC BY-NC 4.0</a> (=you share and adapt as long as you give attribution, don’t make money out of it, and keep the same license).</p>
 </div>
 
             <aside>
@@ -635,10 +711,10 @@ but they lack:<br/>&nbsp;&nbsp;&nbsp;– grouping (except what is offered by ite
         <div class="span2" style="float:right;font-size:0.9em;">
  
             <h4>Published</h4>
-            <time pubdate="pubdate" datetime="2022-01-10T16:09:33.453239+07:00">Jan 10, 2022</time>
+            <time pubdate="pubdate" datetime="2022-02-01T16:43:48.776189+07:00">Feb 1, 2022</time>
  
             <h4>Last Updated</h4>
-            <div class="last_updated">2022-01-10 16:09:33.453239+07:00</div>
+            <div class="last_updated">2022-02-01 16:43:48.776189+07:00</div>
             <h4>Category</h4>
             <a class="category-link" href="/categories.html#numpy-data-types-ref">numpy-data-types</a> 
 
